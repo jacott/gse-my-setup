@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="gnome-shell-extensions">
+  <schema path="/org/gnome/shell/extensions/my-setup/" id="org.gnome.shell.extensions.my-setup">
+    <key name="app-hotkey-1" type="as">
+      <default><![CDATA[['<Super>1']]]></default>
+      <summary>Keybinding to trigger 1st app</summary>
+      <description>
+        Keybinding to trigger 1st app.
+      </description>
+    </key>
+  </schema>
+</schemalist>
