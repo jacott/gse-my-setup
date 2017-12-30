@@ -2,7 +2,7 @@
 
 UUID = my-setup@geoffjacobsen.gmail.com
 BASE_MODULES = extension.js stylesheet.css metadata.json COPYING README.md
-EXTRA_MODULES = Utils.js Nav.js Convenience.js # Settings.ui
+EXTRA_MODULES = Utils.js Nav.js Convenience.js GeoSwitch.js # Settings.ui
 # EXTRA_MEDIA = logo.svg glossy.svg
 # TOLOCALIZE =  prefs.js appIcons.js
 MSGSRC = $(wildcard po/*.po)

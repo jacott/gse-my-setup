@@ -1,34 +1,47 @@
 /* global imports */
 
-const {Keyboard} = imports.ui.keyboard;
+var {init, enable, disable} = (()=>{
 
-const Me = imports.misc.extensionUtils.getCurrentExtension();
-const {Nav} = Me.imports;
+  const {Keyboard} = imports.ui.keyboard;
 
-// We declare this with var so it can be accessed by other extensions in
-// GNOME Shell 3.26+ (mozjs52+).
+  const Me = imports.misc.extensionUtils.getCurrentExtension();
+  const {Nav} = Me.imports;
 
-var navManager;
+  let navManager;
 
-let _originalLastDeviceIsTouchscreen;
+  let _originalLastDeviceIsTouchscreen;
 
-const _modifiedLastDeviceIsTouchscreen = ()=> false;
+  const _modifiedLastDeviceIsTouchscreen = ()=> false;
 
-function init() {
-}
+  const WorkspaceSwitcherPopup = imports.ui.workspaceSwitcherPopup;
 
-function enable() {
-  _originalLastDeviceIsTouchscreen = Keyboard.prototype._lastDeviceIsTouchscreen;
-  Keyboard.prototype._lastDeviceIsTouchscreen = _modifiedLastDeviceIsTouchscreen;
+  let display;
 
-  navManager = new Nav.Manager();
-}
+  return {
+    init() {},
 
-function disable() {
-  Keyboard.prototype._lastDeviceIsTouchscreen = _originalLastDeviceIsTouchscreen;
-  _originalLastDeviceIsTouchscreen = null;
+    enable() {
+      _originalLastDeviceIsTouchscreen = Keyboard.prototype._lastDeviceIsTouchscreen;
+      Keyboard.prototype._lastDeviceIsTouchscreen = _modifiedLastDeviceIsTouchscreen;
 
-  navManager.destroy();
+      display = WorkspaceSwitcherPopup.WorkspaceSwitcherPopup.prototype.display;
+      WorkspaceSwitcherPopup.WorkspaceSwitcherPopup.prototype.display = ()=>{};
 
-  navManager=null;
-}
+
+      navManager = new Nav.Manager();
+    },
+
+    disable() {
+      Keyboard.prototype._lastDeviceIsTouchscreen = _originalLastDeviceIsTouchscreen;
+      _originalLastDeviceIsTouchscreen = null;
+
+      WorkspaceSwitcherPopup.WorkspaceSwitcherPopup.prototype.display = display;
+      display = null;
+
+      navManager.destroy();
+
+      navManager=null;
+    },
+  };
+
+})();
