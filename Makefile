@@ -2,7 +2,7 @@
 
 UUID = my-setup@geoffjacobsen.gmail.com
 BASE_MODULES = extension.js stylesheet.css metadata.json COPYING README.md
-EXTRA_MODULES = utils.js # convenience.js Settings.ui
+EXTRA_MODULES = Utils.js Nav.js Convenience.js # Settings.ui
 # EXTRA_MEDIA = logo.svg glossy.svg
 # TOLOCALIZE =  prefs.js appIcons.js
 MSGSRC = $(wildcard po/*.po)
@@ -79,8 +79,8 @@ _build: all
 	-rm -fR ./_build
 	mkdir -p _build
 	cp $(BASE_MODULES) $(EXTRA_MODULES) _build
-	mkdir -p _build/media
-	cd media ; cp $(EXTRA_MEDIA) ../_build/media/
+	# mkdir -p _build/media
+	# cd media ; cp $(EXTRA_MEDIA) ../_build/media/
 	mkdir -p _build/schemas
 	cp schemas/*.xml _build/schemas/
 	cp schemas/gschemas.compiled _build/schemas/
