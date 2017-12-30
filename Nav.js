@@ -2,7 +2,7 @@
 
 const {
   gi: {St, Gio, Shell, Meta},
-  ui: {main: Main},
+  ui: {main: Main, appFavorites},
 } = imports;
 
 const Me = imports.misc.extensionUtils.getCurrentExtension();
@@ -27,7 +27,25 @@ class DBusAction {
   }
 
   activateFav(str) {
-    log(`action ${str}`);
+    const num = +str;
+    if (! (num > 0 && num < 10)) return;
+    const favs = appFavorites.getAppFavorites().getFavoriteMap();
+    let i = 0;
+    for (const id in favs) {
+      if (++i == num) {
+        const fav = favs[id];
+        let workspace = global.screen.get_workspace_by_index(num-1);
+        if (workspace !== null && global.screen.get_active_workspace() !== workspace)
+          workspace.activate(global.get_current_time());
+        fav.activate();
+        return;
+      }
+    }
+  }
+
+  destroy() {
+    this._dbusImpl.unexport();
+    this._dbusImpl = null;
   }
 }
 
@@ -35,17 +53,25 @@ class Manager {
   constructor() {
     this._settings = Convenience.getSettings('org.gnome.shell.extensions.my-setup');
 
-    Main.wm.addKeybinding(
-      `app-hotkey-1`, this._settings,
-      Meta.KeyBindingFlags.NONE,
-      Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW,
-      ()=>{
-        log('xx super-1 :)');
-      });
     this._dbusAction = new DBusAction();
+
+    for(let i = 1; i < 10; ++i) {
+      const workspace = i;
+      Main.wm.addKeybinding(
+        `app-hotkey-${i}`, this._settings,
+        Meta.KeyBindingFlags.NONE,
+        Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW,
+        ()=>{
+          this._dbusAction.activateFav(workspace);
+        });
+    }
   }
 
   destroy() {
+    for(let i = 1; i < 10; ++i) {
+      Main.wm.removeKeybinding(`app-hotkey-${i}`);
+    }
+    this._dbusAction.destroy();
     this._dbusAction = null;
   }
 }

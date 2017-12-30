@@ -3,9 +3,65 @@
   <schema path="/org/gnome/shell/extensions/my-setup/" id="org.gnome.shell.extensions.my-setup">
     <key name="app-hotkey-1" type="as">
       <default><![CDATA[['<Super>1']]]></default>
-      <summary>Keybinding to trigger 1st app</summary>
+      <summary>Keybinding to trigger app 1</summary>
       <description>
-        Keybinding to trigger 1st app.
+        Keybinding to trigger app 1.
+      </description>
+    </key>
+    <key name="app-hotkey-2" type="as">
+      <default><![CDATA[['<Super>2']]]></default>
+      <summary>Keybinding to trigger app 2</summary>
+      <description>
+        Keybinding to trigger app 2.
+      </description>
+    </key>
+    <key name="app-hotkey-3" type="as">
+      <default><![CDATA[['<Super>3']]]></default>
+      <summary>Keybinding to trigger app 3</summary>
+      <description>
+        Keybinding to trigger app 3.
+      </description>
+    </key>
+    <key name="app-hotkey-4" type="as">
+      <default><![CDATA[['<Super>4']]]></default>
+      <summary>Keybinding to trigger app 4</summary>
+      <description>
+        Keybinding to trigger app 4.
+      </description>
+    </key>
+    <key name="app-hotkey-5" type="as">
+      <default><![CDATA[['<Super>5']]]></default>
+      <summary>Keybinding to trigger app 5</summary>
+      <description>
+        Keybinding to trigger app 5.
+      </description>
+    </key>
+    <key name="app-hotkey-6" type="as">
+      <default><![CDATA[['<Super>6']]]></default>
+      <summary>Keybinding to trigger app 6</summary>
+      <description>
+        Keybinding to trigger app 6.
+      </description>
+    </key>
+    <key name="app-hotkey-7" type="as">
+      <default><![CDATA[['<Super>7']]]></default>
+      <summary>Keybinding to trigger app 7</summary>
+      <description>
+        Keybinding to trigger app 7.
+      </description>
+    </key>
+    <key name="app-hotkey-8" type="as">
+      <default><![CDATA[['<Super>8']]]></default>
+      <summary>Keybinding to trigger app 8</summary>
+      <description>
+        Keybinding to trigger app 8.
+      </description>
+    </key>
+    <key name="app-hotkey-9" type="as">
+      <default><![CDATA[['<Super>9']]]></default>
+      <summary>Keybinding to trigger app 9</summary>
+      <description>
+        Keybinding to trigger app 9.
       </description>
     </key>
   </schema>
