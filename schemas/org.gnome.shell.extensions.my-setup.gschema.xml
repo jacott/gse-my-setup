@@ -61,5 +61,11 @@
       <description>
       </description>
     </key>
+    <key name="raise-or-lower-and-focus" type="as">
+      <default><![CDATA[['<Super>space']]]></default>
+      <summary>Raise or lower window and focus window under pointer</summary>
+      <description>
+      </description>
+    </key>
   </schema>
 </schemalist>

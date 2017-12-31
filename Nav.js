@@ -8,7 +8,10 @@ var {Manager} = (()=>{
   } = imports;
 
   const Me = imports.misc.extensionUtils.getCurrentExtension();
-  const {Convenience, GeoSwitch} = Me.imports;
+  const {
+    Convenience,
+    Utils: {pointInRect, rectIntersect}
+  } = Me.imports;
 
   const cmds = new Array(4);
 
@@ -24,6 +27,56 @@ var {Manager} = (()=>{
  </interface>
 </node>
 `;
+
+  const findTopWindowAt = (x, y, not_me)=>{
+    const windows = imports.gi.Meta.get_window_actors(global.screen);
+
+    const cws = global.screen.get_active_workspace();
+
+    for(let i = windows.length-1; i >= 0; --i) {
+      const mw = windows[i].metaWindow;
+      if (mw !== not_me && mw.get_window_type() == 0 && mw.get_workspace() === cws &&
+          pointInRect(x, y, mw.get_frame_rect()))
+        return mw;
+    }
+  };
+
+
+  const focusPointer = (not_me)=>{
+    const [x, y] = global.get_pointer();
+    const mw = findTopWindowAt(x, y, not_me);
+    mw === undefined || mw.has_focus() || mw.focus(global.get_current_time());
+  };
+
+  const raiseOrLower = (display, screen=global.screen, window) =>{
+    if (window == null) {
+      const [x, y] = global.get_pointer();
+      window = findTopWindowAt(x, y);
+      if (window === undefined) return;
+    }
+    const windows = imports.gi.Meta.get_window_actors(screen);
+
+    const cws = screen.get_active_workspace();
+
+    const rect = window.get_frame_rect();
+
+    for(let i = windows.length-1; i >= 0; --i) {
+      const mw = windows[i].metaWindow;
+      if (mw.get_window_type() !== 0 || mw.get_workspace() !== cws)
+        continue;
+      if (window === mw)
+        break;
+
+      if (rectIntersect(rect, mw.get_frame_rect())) {
+        window.raise();
+        window.has_focus() || window.focus(global.get_current_time());
+        return;
+      }
+    }
+
+    window.lower();
+    focusPointer(window);
+  };
 
   class DBusAction {
     constructor() {
@@ -48,7 +101,7 @@ var {Manager} = (()=>{
       }
     }
 
-    focusPointer() {GeoSwitch.Pointer.focus()}
+    focusPointer() {focusPointer()}
 
     destroy() {
       this._dbusImpl.unexport();
@@ -77,7 +130,14 @@ var {Manager} = (()=>{
         'focus-window', this._settings,
         Meta.KeyBindingFlags.NONE,
         Shell.ActionMode.NORMAL,
-        GeoSwitch.Pointer.focus
+        ()=>focusPointer()
+      );
+
+      Main.wm.addKeybinding(
+        'raise-or-lower-and-focus', this._settings,
+        Meta.KeyBindingFlags.NONE,
+        Shell.ActionMode.NORMAL,
+        raiseOrLower
       );
     }
 
