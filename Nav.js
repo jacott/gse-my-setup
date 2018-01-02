@@ -28,6 +28,44 @@ var {Manager} = (()=>{
 </node>
 `;
 
+  const getCenter = window=>{
+    const rect = window.get_frame_rect();
+    return {x: rect.x+(rect.width>>1), y: rect.y+(rect.height>>1)};
+  };
+
+  const focusWindowDir = viableMag=>{
+    const window = global.display.get_focus_window();
+    if (window == null) return;
+
+    const {screen} = global;
+
+    const windows = imports.gi.Meta.get_window_actors(screen);
+
+    const cws = screen.get_active_workspace();
+
+    const myPos = getCenter(window);
+    let bestMag = -1, bestWindow;
+
+    for(let i = windows.length-1; i >= 0; --i) {
+      const mw = windows[i].metaWindow;
+      if (window === mw || mw.get_window_type() !== 0 || mw.get_workspace() !== cws)
+        continue;
+
+      const cPos = getCenter(mw);
+      if (viableMag(myPos, cPos)) {
+        const x = myPos.x - cPos.x, y = myPos.y - cPos.y;
+        const mag = x*x + y*y;
+        if (bestMag == -1 || mag < bestMag) {
+          bestMag = mag;
+          bestWindow = mw;
+        }
+      }
+    }
+
+    bestWindow === undefined || bestWindow.focus(global.get_current_time());
+  };
+
+
   const findTopWindowAt = (x, y, not_me)=>{
     const windows = imports.gi.Meta.get_window_actors(global.screen);
 
@@ -139,6 +177,23 @@ var {Manager} = (()=>{
         Shell.ActionMode.NORMAL,
         raiseOrLower
       );
+
+      const DELTA = 20;
+
+      const BETTER = {
+        left: (myPos, cPos) => myPos.x > cPos.x && (myPos.x - cPos.x) > DELTA,
+        up: (myPos, cPos) => myPos.y > cPos.y && (myPos.y - cPos.y) > DELTA,
+        right: (myPos, cPos) => myPos.x < cPos.x && (cPos.x - myPos.x) > DELTA,
+        down: (myPos, cPos) => myPos.y < cPos.y && (cPos.y - myPos.y) > DELTA,
+      };
+      for (const name in BETTER) {
+        Main.wm.addKeybinding(
+          `focus-window-${name}`, this._settings,
+          Meta.KeyBindingFlags.NONE,
+          Shell.ActionMode.NORMAL,
+          ()=>{focusWindowDir(BETTER[name])},
+        );
+      }
     }
 
     destroy() {
