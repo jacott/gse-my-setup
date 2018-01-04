@@ -40,9 +40,9 @@ var {init, enable, disable} = (()=>{
 
       navManager = new Nav.Manager();
 
-      wsText = new St.Label({ text: "0:0", style_class: 'ws-text' });
-      Main.panel._rightBox.insert_child_at_index(wsText, 0);
+      wsText = new St.Label({ text: "", style_class: 'ws-text' });
       workspaceChanged();
+      Main.panel._rightBox.insert_child_at_index(wsText, 0);
       globalSignals.push(global.screen.connect('workspace-switched', workspaceChanged));
     },
 

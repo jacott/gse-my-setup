@@ -2,7 +2,7 @@
 
 UUID = my-setup@geoffjacobsen.gmail.com
 BASE_MODULES = extension.js stylesheet.css metadata.json COPYING README.md
-EXTRA_MODULES = Utils.js Nav.js Convenience.js GeoSwitch.js # Settings.ui
+EXTRA_MODULES = Utils.js Nav.js GeoSwitch.js # Settings.ui
 # EXTRA_MEDIA = logo.svg glossy.svg
 # TOLOCALIZE =  prefs.js appIcons.js
 MSGSRC = $(wildcard po/*.po)
@@ -60,7 +60,7 @@ install-local: _build
 	mkdir -p $(INSTALLBASE)/$(INSTALLNAME)
 	cp -r ./_build/* $(INSTALLBASE)/$(INSTALLNAME)/
 ifeq ($(INSTALLTYPE),system)
-	# system-wide settings and locale files
+# system-wide settings and locale files
 	rm -r $(INSTALLBASE)/$(INSTALLNAME)/schemas $(INSTALLBASE)/$(INSTALLNAME)/locale
 	mkdir -p $(SHARE_PREFIX)/glib-2.0/schemas $(SHARE_PREFIX)/locale
 	cp -r ./schemas/*gschema.* $(SHARE_PREFIX)/glib-2.0/schemas
@@ -79,16 +79,16 @@ _build: all
 	-rm -fR ./_build
 	mkdir -p _build
 	cp $(BASE_MODULES) $(EXTRA_MODULES) _build
-	# mkdir -p _build/media
-	# cd media ; cp $(EXTRA_MEDIA) ../_build/media/
+# mkdir -p _build/media
+# cd media ; cp $(EXTRA_MEDIA) ../_build/media/
 	mkdir -p _build/schemas
 	cp schemas/*.xml _build/schemas/
 	cp schemas/gschemas.compiled _build/schemas/
 	mkdir -p _build/locale
-	# for l in $(MSGSRC:.po=.mo) ; do \
-	# 	lf=_build/locale/`basename $$l .mo`; \
-	# 	mkdir -p $$lf; \
-	# 	mkdir -p $$lf/LC_MESSAGES; \
-	# 	cp $$l $$lf/LC_MESSAGES/dashtodock.mo; \
-	# done;
+# for l in $(MSGSRC:.po=.mo) ; do \
+# 	lf=_build/locale/`basename $$l .mo`; \
+# 	mkdir -p $$lf; \
+# 	mkdir -p $$lf/LC_MESSAGES; \
+# 	cp $$l $$lf/LC_MESSAGES/dashtodock.mo; \
+# done;
 	sed -i 's/"version": -1/"version": "$(VERSION)"/'  _build/metadata.json;

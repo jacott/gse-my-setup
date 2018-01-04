@@ -9,8 +9,7 @@ var {Manager} = (()=>{
 
   const Me = imports.misc.extensionUtils.getCurrentExtension();
   const {
-    Convenience,
-    Utils: {pointInRect, rectIntersect}
+    Utils: {pointInRect, rectIntersect, getSettings}
   } = Me.imports;
 
   const cmds = new Array(4);
@@ -149,7 +148,7 @@ var {Manager} = (()=>{
 
   class Manager {
     constructor() {
-      this._settings = Convenience.getSettings('org.gnome.shell.extensions.my-setup');
+      this._settings = getSettings();
 
       this._dbusAction = new DBusAction();
 
