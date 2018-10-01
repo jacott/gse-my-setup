@@ -7,9 +7,9 @@ var {init, enable, disable} = (()=>{
   const {main: Main, keyboard: {Keyboard}} = imports.ui;
 
   const Me = imports.misc.extensionUtils.getCurrentExtension();
-  const {Nav} = Me.imports;
+  const {Nav, Tile, Utils: {DisplayWrapper}} = Me.imports;
 
-  let navManager;
+  let navManager, tileManager;
 
   let _originalLastDeviceIsTouchscreen;
 
@@ -21,7 +21,7 @@ var {init, enable, disable} = (()=>{
   let display, wsText;
 
   const workspaceChanged = ()=>{
-    const cws = global.screen.get_active_workspace();
+    const cws = DisplayWrapper.getWorkspaceManager().get_active_workspace();
 
     wsText.text = ""+(cws.index()+1);
   };
@@ -43,7 +43,9 @@ var {init, enable, disable} = (()=>{
       wsText = new St.Label({ text: "", style_class: 'ws-text' });
       workspaceChanged();
       Main.panel._rightBox.insert_child_at_index(wsText, 0);
-      globalSignals.push(global.screen.connect('workspace-switched', workspaceChanged));
+      globalSignals.push(DisplayWrapper.getWorkspaceManager().connect('workspace-switched', workspaceChanged));
+
+      tileManager = new Tile.Manager();
     },
 
     disable() {
@@ -57,10 +59,10 @@ var {init, enable, disable} = (()=>{
       wsText.destroy(); wsText = undefined;
 
       navManager.destroy(); navManager = undefined;
-
+      tileManager.destroy(); tileManager = undefined;
 
       for (let i = 0; i < globalSignals.length; i++)
-        global.screen.disconnect(globalSignals[i]);
+        DisplayWrapper.getScreen().disconnect(globalSignals[i]);
       globalSignals = undefined;
     },
   };

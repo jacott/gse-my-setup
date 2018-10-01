@@ -5,6 +5,8 @@
 
 var {Pointer} = (()=>{
   const {Gdk} = imports.gi;
+  const Me = imports.misc.extensionUtils.getCurrentExtension();
+  const {Utils: {DisplayWrapper}} = Me.imports;
 
   // let display = Gdk.Display.get_default();
   // let deviceManager = display.get_device_manager();
@@ -16,10 +18,10 @@ var {Pointer} = (()=>{
   class Pointer {
     static focus() {
 
-      const windows = imports.gi.Meta.get_window_actors(global.screen);
+      const windows = imports.gi.Meta.get_window_actors(DisplayWrapper.getScreen());
       const [x, y] = global.get_pointer();
 
-      const cws = global.screen.get_active_workspace();
+      const cws = DisplayWrapper.getWorkspaceManager().get_active_workspace();
 
       for(let i = windows.length-1; i >= 0; --i) {
         const mw = windows[i].metaWindow;

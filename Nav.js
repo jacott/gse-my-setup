@@ -9,7 +9,7 @@ var {Manager} = (()=>{
 
   const Me = imports.misc.extensionUtils.getCurrentExtension();
   const {
-    Utils: {pointInRect, rectIntersect, getSettings}
+    Utils: {pointInRect, rectIntersect, getSettings, DisplayWrapper}
   } = Me.imports;
 
   const cmds = new Array(4);
@@ -36,11 +36,12 @@ var {Manager} = (()=>{
     const window = global.display.get_focus_window();
     if (window == null) return;
 
-    const {screen} = global;
+    const wsm = DisplayWrapper.getWorkspaceManager(),
+          screen = DisplayWrapper.getScreen();
 
     const windows = imports.gi.Meta.get_window_actors(screen);
 
-    const cws = screen.get_active_workspace();
+    const cws = wsm.get_active_workspace();
 
     const myPos = getCenter(window);
     let bestMag = -1, bestWindow;
@@ -66,9 +67,9 @@ var {Manager} = (()=>{
 
 
   const findTopWindowAt = (x, y, not_me)=>{
-    const windows = imports.gi.Meta.get_window_actors(global.screen);
+    const windows = imports.gi.Meta.get_window_actors(DisplayWrapper.getScreen());
 
-    const cws = global.screen.get_active_workspace();
+    const cws = DisplayWrapper.getWorkspaceManager().get_active_workspace();
 
     for(let i = windows.length-1; i >= 0; --i) {
       const mw = windows[i].metaWindow;
@@ -85,15 +86,14 @@ var {Manager} = (()=>{
     mw === undefined || mw.has_focus() || mw.focus(global.get_current_time());
   };
 
-  const raiseOrLower = (display, screen=global.screen, window) =>{
-    if (window == null) {
-      const [x, y] = global.get_pointer();
-      window = findTopWindowAt(x, y);
-      if (window === undefined) return;
-    }
-    const windows = imports.gi.Meta.get_window_actors(screen);
+  const raiseOrLower = () =>{
+    const [x, y] = global.get_pointer();
+    const window = findTopWindowAt(x, y) || global.display.get_focus_window();
+    if (window === undefined) return;
 
-    const cws = screen.get_active_workspace();
+    const windows = imports.gi.Meta.get_window_actors(DisplayWrapper.getScreen());
+
+    const cws = DisplayWrapper.getWorkspaceManager().get_active_workspace();
 
     const rect = window.get_frame_rect();
 
@@ -129,8 +129,9 @@ var {Manager} = (()=>{
       for (const id in favs) {
         if (++i == num) {
           const fav = favs[id];
-          let workspace = global.screen.get_workspace_by_index(num-1);
-          if (workspace !== null && global.screen.get_active_workspace() !== workspace)
+          const wsm = DisplayWrapper.getWorkspaceManager();
+          let workspace = wsm.get_workspace_by_index(num-1);
+          if (workspace !== null && wsm.get_active_workspace() !== workspace)
             workspace.activate(global.get_current_time());
           fav.activate();
           return;
@@ -145,6 +146,16 @@ var {Manager} = (()=>{
       this._dbusImpl = null;
     }
   }
+
+  const DELTA = 20;
+
+  const BETTER = {
+    left: (myPos, cPos) => myPos.x > cPos.x && (myPos.x - cPos.x) > DELTA,
+    up: (myPos, cPos) => myPos.y > cPos.y && (myPos.y - cPos.y) > DELTA,
+    right: (myPos, cPos) => myPos.x < cPos.x && (cPos.x - myPos.x) > DELTA,
+    down: (myPos, cPos) => myPos.y < cPos.y && (cPos.y - myPos.y) > DELTA,
+  };
+
 
   class Manager {
     constructor() {
@@ -167,24 +178,16 @@ var {Manager} = (()=>{
         'focus-window', this._settings,
         Meta.KeyBindingFlags.NONE,
         Shell.ActionMode.NORMAL,
-        ()=>focusPointer()
+        ()=>{focusPointer()},
       );
 
       Main.wm.addKeybinding(
         'raise-or-lower-and-focus', this._settings,
         Meta.KeyBindingFlags.NONE,
         Shell.ActionMode.NORMAL,
-        raiseOrLower
+        ()=>{raiseOrLower()},
       );
 
-      const DELTA = 20;
-
-      const BETTER = {
-        left: (myPos, cPos) => myPos.x > cPos.x && (myPos.x - cPos.x) > DELTA,
-        up: (myPos, cPos) => myPos.y > cPos.y && (myPos.y - cPos.y) > DELTA,
-        right: (myPos, cPos) => myPos.x < cPos.x && (cPos.x - myPos.x) > DELTA,
-        down: (myPos, cPos) => myPos.y < cPos.y && (cPos.y - myPos.y) > DELTA,
-      };
       for (const name in BETTER) {
         Main.wm.addKeybinding(
           `focus-window-${name}`, this._settings,
@@ -196,9 +199,11 @@ var {Manager} = (()=>{
     }
 
     destroy() {
-      for(let i = 1; i < 10; ++i) {
-        Main.wm.removeKeybinding(`app-hotkey-${i}`);
-      }
+      for(let i = 1; i < 10; ++i) Main.wm.removeKeybinding(`app-hotkey-${i}`);
+      Main.wm.removeKeybinding('raise-or-lower-and-focus');
+      Main.wm.removeKeybinding('focus-window');
+      for (const name in BETTER) Main.wm.removeKeybinding(`focus-window-${name}`);
+
       this._dbusAction.destroy();
       this._dbusAction = null;
     }

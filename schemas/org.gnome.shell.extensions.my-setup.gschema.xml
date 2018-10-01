@@ -91,5 +91,11 @@
       <description>
       </description>
     </key>
+    <key name="tile-menu" type="as">
+      <default><![CDATA[['<Super>semicolon']]]></default>
+      <summary>Open Tile menu</summary>
+      <description>
+      </description>
+    </key>
   </schema>
 </schemalist>
