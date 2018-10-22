@@ -1,6 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="gnome-shell-extensions">
   <schema path="/org/gnome/shell/extensions/my-setup/" id="org.gnome.shell.extensions.my-setup">
+    <key name="hotkey-1" type="as">
+      <default><![CDATA[['<Super>1']]]></default>
+      <summary>Keybinding to trigger ws 1</summary>
+      <description>
+      </description>
+    </key>
+    <key name="hotkey-2" type="as">
+      <default><![CDATA[['<Super>2']]]></default>
+      <summary>Keybinding to trigger ws 2</summary>
+      <description>
+      </description>
+    </key>
+    <key name="hotkey-3" type="as">
+      <default><![CDATA[['<Super>3']]]></default>
+      <summary>Keybinding to trigger ws 3</summary>
+      <description>
+      </description>
+    </key>
+    <key name="hotkey-4" type="as">
+      <default><![CDATA[['<Super>4']]]></default>
+      <summary>Keybinding to trigger ws 4</summary>
+      <description>
+      </description>
+    </key>
+    <key name="hotkey-5" type="as">
+      <default><![CDATA[['<Super>5']]]></default>
+      <summary>Keybinding to trigger ws 5</summary>
+      <description>
+      </description>
+    </key>
+    <key name="hotkey-6" type="as">
+      <default><![CDATA[['<Super>6']]]></default>
+      <summary>Keybinding to trigger ws 6</summary>
+      <description>
+      </description>
+    </key>
+    <key name="hotkey-7" type="as">
+      <default><![CDATA[['<Super>7']]]></default>
+      <summary>Keybinding to trigger ws 7</summary>
+      <description>
+      </description>
+    </key>
+    <key name="hotkey-8" type="as">
+      <default><![CDATA[['<Super>8']]]></default>
+      <summary>Keybinding to trigger ws 8</summary>
+      <description>
+      </description>
+    </key>
+    <key name="hotkey-9" type="as">
+      <default><![CDATA[['<Super>9']]]></default>
+      <summary>Keybinding to trigger ws 9</summary>
+      <description>
+      </description>
+    </key>
     <key name="app-hotkey-1" type="as">
       <default><![CDATA[['<Super><Ctrl>1']]]></default>
       <summary>Keybinding to trigger app 1</summary>
@@ -55,12 +109,6 @@
       <description>
       </description>
     </key>
-    <key name="focus-window" type="as">
-      <default><![CDATA[['<Super>f']]]></default>
-      <summary>Focus window under pointer</summary>
-      <description>
-      </description>
-    </key>
     <key name="raise-or-lower-and-focus" type="as">
       <default><![CDATA[['<Super>space']]]></default>
       <summary>Raise or lower window and focus window under pointer</summary>
@@ -91,9 +139,9 @@
       <description>
       </description>
     </key>
-    <key name="tile-menu" type="as">
-      <default><![CDATA[['<Super>semicolon']]]></default>
-      <summary>Open Tile menu</summary>
+    <key name="command-menu" type="as">
+      <default><![CDATA[['<Super>f']]]></default>
+      <summary>Open Command menu</summary>
       <description>
       </description>
     </key>

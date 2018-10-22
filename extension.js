@@ -1,4 +1,4 @@
-/* global imports */
+/* global imports log */
 
 var {init, enable, disable} = (()=>{
 
@@ -7,9 +7,9 @@ var {init, enable, disable} = (()=>{
   const {main: Main, keyboard: {Keyboard}} = imports.ui;
 
   const Me = imports.misc.extensionUtils.getCurrentExtension();
-  const {Nav, Tile, Utils: {DisplayWrapper}} = Me.imports;
+  const {Command, Nav, Tile, Utils: {DisplayWrapper}} = Me.imports;
 
-  let navManager, tileManager;
+  let commandManager, navManager, tileManager;
 
   let _originalLastDeviceIsTouchscreen;
 
@@ -38,14 +38,16 @@ var {init, enable, disable} = (()=>{
       display = WorkspaceSwitcherPopup.WorkspaceSwitcherPopup.prototype.display;
       WorkspaceSwitcherPopup.WorkspaceSwitcherPopup.prototype.display = ()=>{};
 
-      navManager = new Nav.Manager();
+      commandManager = new Command.Manager();
+
+      navManager = new Nav.Manager(commandManager);
+      tileManager = new Tile.Manager(commandManager);
 
       wsText = new St.Label({ text: "", style_class: 'ws-text' });
       workspaceChanged();
       Main.panel._rightBox.insert_child_at_index(wsText, 0);
-      globalSignals.push(DisplayWrapper.getWorkspaceManager().connect('workspace-switched', workspaceChanged));
-
-      tileManager = new Tile.Manager();
+      globalSignals.push(DisplayWrapper.getWorkspaceManager()
+                         .connect('workspace-switched', workspaceChanged));
     },
 
     disable() {
@@ -60,6 +62,7 @@ var {init, enable, disable} = (()=>{
 
       navManager.destroy(); navManager = undefined;
       tileManager.destroy(); tileManager = undefined;
+      commandManager.destroy(); commandManager = undefined;
 
       for (let i = 0; i < globalSignals.length; i++)
         DisplayWrapper.getScreen().disconnect(globalSignals[i]);

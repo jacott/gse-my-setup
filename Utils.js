@@ -7,6 +7,16 @@ var pointInRect = (x, y, rect)=> rect.x < x && rect.y < y &&
 var rectIntersect = (r1, r2)=> r1.y <= r2.y+r2.height && r1.y+r1.height >= r2.y &&
     r1.x <= r2.x+r2.width && r1.x+r1.width >= r2.x;
 
+var wsWindows = function *(cws=DisplayWrapper.getWorkspaceManager().get_active_workspace(), hidden=false) {
+  const windows = cws.list_windows();
+
+  for(let i = windows.length-1; i >= 0; --i) {
+    const mw = windows[i];
+    if (mw.get_window_type() == 0 && (hidden || ! mw.is_hidden()))
+      yield mw;
+  }
+}
+
 var {getSettings} = (()=>{
   const {Gio} = imports.gi;
 
@@ -29,7 +39,9 @@ var {getSettings} = (()=>{
     return _settings = new Gio.Settings({settings_schema});
   };
 
-  return {getSettings};
+  return {
+    getSettings,
+  };
 })();
 
 var DisplayWrapper = {
@@ -43,5 +55,5 @@ var DisplayWrapper = {
 
   getMonitorManager() {
     return global.screen || Meta.MonitorManager.get();
-  }
+  },
 };

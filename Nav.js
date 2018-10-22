@@ -9,7 +9,7 @@ var {Manager} = (()=>{
 
   const Me = imports.misc.extensionUtils.getCurrentExtension();
   const {
-    Utils: {pointInRect, rectIntersect, getSettings, DisplayWrapper}
+    Utils: {pointInRect, rectIntersect, getSettings, DisplayWrapper, wsWindows}
   } = Me.imports;
 
   const cmds = new Array(4);
@@ -18,6 +18,9 @@ var {Manager} = (()=>{
 <node>
  <interface name="org.gnome.Shell.mySetup">
    <method name="activateFav">
+     <arg type="s" direction="in" />
+   </method>
+   <method name="switchWs">
      <arg type="s" direction="in" />
    </method>
    <method name="focusPointer">
@@ -36,21 +39,10 @@ var {Manager} = (()=>{
     const window = global.display.get_focus_window();
     if (window == null) return;
 
-    const wsm = DisplayWrapper.getWorkspaceManager(),
-          screen = DisplayWrapper.getScreen();
-
-    const windows = imports.gi.Meta.get_window_actors(screen);
-
-    const cws = wsm.get_active_workspace();
-
     const myPos = getCenter(window);
     let bestMag = -1, bestWindow;
 
-    for(let i = windows.length-1; i >= 0; --i) {
-      const mw = windows[i].metaWindow;
-      if (window === mw || mw.get_window_type() !== 0 || mw.get_workspace() !== cws)
-        continue;
-
+    for(const mw of wsWindows()) {
       const cPos = getCenter(mw);
       if (viableMag(myPos, cPos)) {
         const x = myPos.x - cPos.x, y = myPos.y - cPos.y;
@@ -67,14 +59,8 @@ var {Manager} = (()=>{
 
 
   const findTopWindowAt = (x, y, not_me)=>{
-    const windows = imports.gi.Meta.get_window_actors(DisplayWrapper.getScreen());
-
-    const cws = DisplayWrapper.getWorkspaceManager().get_active_workspace();
-
-    for(let i = windows.length-1; i >= 0; --i) {
-      const mw = windows[i].metaWindow;
-      if (mw !== not_me && mw.get_window_type() == 0 && mw.get_workspace() === cws &&
-          pointInRect(x, y, mw.get_frame_rect()))
+    for(const mw of wsWindows()) {
+      if (mw !== not_me && pointInRect(x, y, mw.get_frame_rect()))
         return mw;
     }
   };
@@ -84,6 +70,8 @@ var {Manager} = (()=>{
     const [x, y] = global.get_pointer();
     const mw = findTopWindowAt(x, y, not_me);
     mw === undefined || mw.has_focus() || mw.focus(global.get_current_time());
+    mw === undefined || (global.__MW = mw);
+    global.__FW = global.display.get_focus_window();
   };
 
   const raiseOrLower = () =>{
@@ -91,16 +79,9 @@ var {Manager} = (()=>{
     const window = findTopWindowAt(x, y) || global.display.get_focus_window();
     if (window === undefined) return;
 
-    const windows = imports.gi.Meta.get_window_actors(DisplayWrapper.getScreen());
-
-    const cws = DisplayWrapper.getWorkspaceManager().get_active_workspace();
-
     const rect = window.get_frame_rect();
 
-    for(let i = windows.length-1; i >= 0; --i) {
-      const mw = windows[i].metaWindow;
-      if (mw.get_window_type() !== 0 || mw.get_workspace() !== cws)
-        continue;
+    for (const mw of wsWindows()) {
       if (window === mw)
         break;
 
@@ -139,6 +120,30 @@ var {Manager} = (()=>{
       }
     }
 
+    switchWs(str) {
+      const num = +str;
+      if (! (num > 0 && num < 10)) return;
+      const wsm = DisplayWrapper.getWorkspaceManager();
+      let workspace = wsm.get_workspace_by_index(num-1);
+      if (workspace === null || wsm.get_active_workspace() === workspace)
+        return;
+
+      let bt = 0, bw;
+      for (const mw of wsWindows(workspace, true)) {
+        const t = mw.get_user_time();
+        if (mw.user_time > bt) {
+          bt = mw.user_time;
+          bw = mw;
+        }
+      }
+
+      if (bw !== undefined) {
+        workspace.activate_with_focus(bw, global.get_current_time());
+      } else {
+        workspace.activate(global.get_current_time());
+      }
+    }
+
     focusPointer() {focusPointer()}
 
     destroy() {
@@ -158,7 +163,7 @@ var {Manager} = (()=>{
 
 
   class Manager {
-    constructor() {
+    constructor(commandManager) {
       this._settings = getSettings();
 
       this._dbusAction = new DBusAction();
@@ -172,14 +177,18 @@ var {Manager} = (()=>{
           ()=>{
             this._dbusAction.activateFav(workspace);
           });
+        Main.wm.addKeybinding(
+          `hotkey-${i}`, this._settings,
+          Meta.KeyBindingFlags.NONE,
+          Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW,
+          ()=>{
+            this._dbusAction.switchWs(workspace);
+          });
       }
 
-      Main.wm.addKeybinding(
-        'focus-window', this._settings,
-        Meta.KeyBindingFlags.NONE,
-        Shell.ActionMode.NORMAL,
-        ()=>{focusPointer()},
-      );
+      commandManager.addCommand('f', '[f]ocus', ()=>{
+        focusPointer();
+      });
 
       Main.wm.addKeybinding(
         'raise-or-lower-and-focus', this._settings,
@@ -192,7 +201,7 @@ var {Manager} = (()=>{
         Main.wm.addKeybinding(
           `focus-window-${name}`, this._settings,
           Meta.KeyBindingFlags.NONE,
-          Shell.ActionMode.NORMAL,
+          Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW,
           ()=>{focusWindowDir(BETTER[name])},
         );
       }
