@@ -4,10 +4,13 @@ const {Meta} = imports.gi;
 var pointInRect = (x, y, rect)=> rect.x < x && rect.y < y &&
     rect.x+rect.width > x && rect.y+rect.height > y;
 
-var rectIntersect = (r1, r2)=> r1.y <= r2.y+r2.height && r1.y+r1.height >= r2.y &&
-    r1.x <= r2.x+r2.width && r1.x+r1.width >= r2.x;
+var rectIntersect = (r1, r2, margin=0)=> r1.y+margin <= r2.y+r2.height &&
+    r1.y+r1.height >= r2.y+margin &&
+    r1.x+margin <= r2.x+r2.width && r1.x+r1.width >= r2.x+margin;
 
-var wsWindows = function *(cws=DisplayWrapper.getWorkspaceManager().get_active_workspace(), hidden=false) {
+var wsWindows = function *(
+  cws=DisplayWrapper.getWorkspaceManager().get_active_workspace(), hidden=false)
+{
   const windows = cws.list_windows();
 
   for(let i = windows.length-1; i >= 0; --i) {

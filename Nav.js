@@ -58,34 +58,39 @@ var {Manager} = (()=>{
   };
 
 
-  const findTopWindowAt = (x, y, not_me)=>{
-    for(const mw of wsWindows()) {
+  const findTopWindowAt = (windows, x, y, not_me)=>{
+    for(let i = windows.length-1; i >= 0; --i) {
+      const mw = windows[i];
       if (mw !== not_me && pointInRect(x, y, mw.get_frame_rect()))
         return mw;
     }
   };
 
+  const stackingOrderWindows = (
+    ws=DisplayWrapper.getWorkspaceManager().get_active_workspace()
+  )=> DisplayWrapper.getScreen().sort_windows_by_stacking(ws.list_windows());
 
   const focusPointer = (not_me)=>{
     const [x, y] = global.get_pointer();
-    const mw = findTopWindowAt(x, y, not_me);
+    const mw = findTopWindowAt(stackingOrderWindows(), x, y, not_me);
     mw === undefined || mw.has_focus() || mw.focus(global.get_current_time());
-    mw === undefined || (global.__MW = mw);
-    global.__FW = global.display.get_focus_window();
+    global.display.get_focus_window();
   };
 
   const raiseOrLower = () =>{
     const [x, y] = global.get_pointer();
-    const window = findTopWindowAt(x, y) || global.display.get_focus_window();
+    const windows = stackingOrderWindows();
+    const window = findTopWindowAt(windows, x, y) || global.display.get_focus_window();
     if (window === undefined) return;
 
     const rect = window.get_frame_rect();
 
-    for (const mw of wsWindows()) {
+    for(let i = windows.length-1; i >= 0; --i) {
+      const mw = windows[i];
       if (window === mw)
         break;
 
-      if (rectIntersect(rect, mw.get_frame_rect())) {
+      if (rectIntersect(rect, mw.get_frame_rect(), 10)) {
         window.raise();
         window.has_focus() || window.focus(global.get_current_time());
         return;
