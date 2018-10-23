@@ -123,7 +123,7 @@ var Manager = (()=>{
 
         const sym = event.get_key_symbol();
 
-        if (press && sym >=20 && sym < 128) {
+        if (press) {
           const func = lookup(map, event);
           if (typeof func === 'function') {
             map = func(this, event) ? this.keyMap : undefined;
