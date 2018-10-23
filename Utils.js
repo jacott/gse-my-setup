@@ -9,8 +9,8 @@ var rectIntersect = (r1, r2, margin=0)=> r1.y+margin <= r2.y+r2.height &&
     r1.x+margin <= r2.x+r2.width && r1.x+r1.width >= r2.x+margin;
 
 var wsWindows = function *(
-  cws=DisplayWrapper.getWorkspaceManager().get_active_workspace(), hidden=false)
-{
+  cws=DisplayWrapper.getWorkspaceManager().get_active_workspace(), hidden=false
+) {
   const windows = cws.list_windows();
 
   for(let i = windows.length-1; i >= 0; --i) {
@@ -18,7 +18,19 @@ var wsWindows = function *(
     if (mw.get_window_type() == 0 && (hidden || ! mw.is_hidden()))
       yield mw;
   }
-}
+};
+
+var moveResize = (mw, x, y, w, h)=>{
+  const m = mw.get_maximized();
+  if (m != 0) mw.unmaximize(m);
+  mw.move_resize_frame(true, x, y, w, h);
+};
+
+var moveResizeRect = (mw, rect)=>{
+  const m = mw.get_maximized();
+  if (m != 0) mw.unmaximize(m);
+  mw.move_resize_frame(true, rect.x, rect.y, rect.width, rect.height);
+};
 
 var {getSettings} = (()=>{
   const {Gio} = imports.gi;

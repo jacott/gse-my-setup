@@ -9,7 +9,10 @@ var {Manager} = (()=>{
 
   const Me = imports.misc.extensionUtils.getCurrentExtension();
   const {
-    Utils: {pointInRect, rectIntersect, getSettings, DisplayWrapper, wsWindows}
+    Utils: {
+      pointInRect, rectIntersect, getSettings,
+      moveResizeRect,
+      DisplayWrapper, wsWindows}
   } = Me.imports;
 
   const cmds = new Array(4);
@@ -35,8 +38,7 @@ var {Manager} = (()=>{
     return {x: rect.x+(rect.width>>1), y: rect.y+(rect.height>>1)};
   };
 
-  const focusWindowDir = viableMag=>{
-    const window = global.display.get_focus_window();
+  const findWindowDir = (viableMag, window=global.display.get_focus_window())=>{
     if (window == null) return;
 
     const myPos = getCenter(window);
@@ -54,7 +56,25 @@ var {Manager} = (()=>{
       }
     }
 
-    bestWindow === undefined || bestWindow.focus(global.get_current_time());
+    return bestWindow;
+  };
+
+  const focusWindowDir = viableMag=>{
+    const window = findWindowDir(viableMag);
+
+    window === undefined || window.focus(global.get_current_time());
+  };
+
+  const swapWindowDir = viableMag=>{
+    const fw = global.display.get_focus_window();
+    const dw = findWindowDir(viableMag, fw);
+
+    if (dw !== undefined) {
+      const fwRect = fw.get_frame_rect();
+      const dwRect = dw.get_frame_rect();
+      moveResizeRect(fw, dwRect);
+      moveResizeRect(dw, fwRect);
+    }
   };
 
 
@@ -191,6 +211,12 @@ var {Manager} = (()=>{
           });
       }
 
+      Main.wm.addKeybinding(
+        'focus-window', this._settings,
+        Meta.KeyBindingFlags.NONE,
+        Shell.ActionMode.NORMAL,
+        ()=>{focusPointer()},
+      );
       commandManager.addCommand('f', '[f]ocus', ()=>{
         focusPointer();
       });
@@ -203,6 +229,12 @@ var {Manager} = (()=>{
       );
 
       for (const name in BETTER) {
+        Main.wm.addKeybinding(
+          `swap-window-${name}`, this._settings,
+          Meta.KeyBindingFlags.NONE,
+          Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW,
+          ()=>{swapWindowDir(BETTER[name])},
+        );
         Main.wm.addKeybinding(
           `focus-window-${name}`, this._settings,
           Meta.KeyBindingFlags.NONE,

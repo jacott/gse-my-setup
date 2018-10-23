@@ -9,21 +9,10 @@ var Manager = (()=>{
 
   const Me = imports.misc.extensionUtils.getCurrentExtension();
   const {
-    Utils: {getSettings, DisplayWrapper, wsWindows}
+    Utils: {getSettings, DisplayWrapper, wsWindows, moveResize}
   } = Me.imports;
 
   const timeDescCompare = (a, b)=> b.user_time - a.user_time;
-
-  const unmax = (mw)=>{
-    const m = mw.get_maximized();
-    if (m != 0)
-      mw.unmaximize(m);
-  };
-
-  const moveResize = (mw, x, y, w, h)=>{
-    unmax(mw);
-    mw.move_resize_frame(true, x, y, w, h);
-  };
 
   class Manager {
     constructor(commandManager) {

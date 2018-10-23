@@ -115,6 +115,32 @@
       <description>
       </description>
     </key>
+
+    <key name="swap-window-left" type="as">
+      <default><![CDATA[['<Super><Shift>j']]]></default>
+      <summary>Swap with window to the left</summary>
+      <description>
+      </description>
+    </key>
+    <key name="swap-window-right" type="as">
+      <default><![CDATA[['<Super><Shift>l']]]></default>
+      <summary>Swap with window to the right</summary>
+      <description>
+      </description>
+    </key>
+    <key name="swap-window-up" type="as">
+      <default><![CDATA[['<Super><Shift>i']]]></default>
+      <summary>Swap with window above</summary>
+      <description>
+      </description>
+    </key>
+    <key name="swap-window-down" type="as">
+      <default><![CDATA[['<Super><Shift>k']]]></default>
+      <summary>Swap with window below</summary>
+      <description>
+      </description>
+    </key>
+
     <key name="focus-window-left" type="as">
       <default><![CDATA[['<Super>j']]]></default>
       <summary>Focus window to the left</summary>
@@ -139,9 +165,16 @@
       <description>
       </description>
     </key>
+
     <key name="command-menu" type="as">
-      <default><![CDATA[['<Super>f']]]></default>
+      <default><![CDATA[['<Super>d']]]></default>
       <summary>Open Command menu</summary>
+      <description>
+      </description>
+    </key>
+    <key name="focus-window" type="as">
+      <default><![CDATA[['<Super>f']]]></default>
+      <summary>Focus window under pointer</summary>
       <description>
       </description>
     </key>
