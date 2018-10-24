@@ -88,7 +88,7 @@ var {Manager} = (()=>{
 
   const stackingOrderWindows = (
     ws=DisplayWrapper.getWorkspaceManager().get_active_workspace()
-  )=> DisplayWrapper.getScreen().sort_windows_by_stacking(ws.list_windows());
+  )=> DisplayWrapper.getScreen().sort_windows_by_stacking(Array.from(wsWindows(ws)));
 
   const focusPointer = (not_me)=>{
     const [x, y] = global.get_pointer();
@@ -154,7 +154,7 @@ var {Manager} = (()=>{
         return;
 
       let bt = 0, bw;
-      for (const mw of wsWindows(workspace, true)) {
+      for (const mw of wsWindows(workspace)) {
         const t = mw.get_user_time();
         if (mw.user_time > bt) {
           bt = mw.user_time;
@@ -184,6 +184,14 @@ var {Manager} = (()=>{
     up: (myPos, cPos) => myPos.y > cPos.y && (myPos.y - cPos.y) > DELTA,
     right: (myPos, cPos) => myPos.x < cPos.x && (cPos.x - myPos.x) > DELTA,
     down: (myPos, cPos) => myPos.y < cPos.y && (cPos.y - myPos.y) > DELTA,
+  };
+
+  const showAllWindows = ()=>{
+    const cws=DisplayWrapper.getWorkspaceManager().get_active_workspace();
+    for (const mw of cws.list_windows()) {
+      if (! mw.showing_on_its_workspace())
+        mw.unminimize();
+    }
   };
 
 
@@ -220,6 +228,9 @@ var {Manager} = (()=>{
       commandManager.addCommand('f', '[f]ocus', ()=>{
         focusPointer();
       });
+
+
+      commandManager.addCommand('s', '[s]how-all-windows', showAllWindows);
 
       Main.wm.addKeybinding(
         'raise-or-lower-and-focus', this._settings,

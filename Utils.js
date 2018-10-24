@@ -8,14 +8,12 @@ var rectIntersect = (r1, r2, margin=0)=> r1.y+margin <= r2.y+r2.height &&
     r1.y+r1.height >= r2.y+margin &&
     r1.x+margin <= r2.x+r2.width && r1.x+r1.width >= r2.x+margin;
 
-var wsWindows = function *(
-  cws=DisplayWrapper.getWorkspaceManager().get_active_workspace(), hidden=false
-) {
+var wsWindows = function *(cws=DisplayWrapper.getWorkspaceManager().get_active_workspace()) {
   const windows = cws.list_windows();
 
   for(let i = windows.length-1; i >= 0; --i) {
     const mw = windows[i];
-    if (mw.get_window_type() == 0 && (hidden || ! mw.is_hidden()))
+    if (mw.get_window_type() == 0 && mw.showing_on_its_workspace())
       yield mw;
   }
 };
