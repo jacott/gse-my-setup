@@ -16,12 +16,9 @@ var Manager = (()=>{
     Utils: {getSettings}
   } = Me.imports;
 
-  const CommandDialog = new Lang.Class({
-    Name: 'CommandDialog',
-    Extends: ModalDialog,
-
-    _init() {
-      this.parent({
+  class CommandDialog extends ModalDialog {
+    constructor() {
+      super({
         shellReactive: true,
         styleClass: 'command-dialog headline',
         shouldFadeIn: false,
@@ -32,8 +29,8 @@ var Manager = (()=>{
       this.contentLayout.add(label, {x_fill: false, x_align: St.Align.START, y_align: St.Align.START});
 
       this.setInitialKeyFocus(label);
-    },
-  });
+    }
+  }
 
   const reduceMod = (raw)=>{
     let mod = 0;
