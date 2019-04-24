@@ -7,7 +7,7 @@ var {init, enable, disable} = (()=>{
   const {main: Main, keyboard: {Keyboard}} = imports.ui;
 
   const Me = imports.misc.extensionUtils.getCurrentExtension();
-  const {Command, Nav, Tile, Utils: {DisplayWrapper}} = Me.imports;
+  const {SystemMonitor, Command, Nav, Tile, Utils: {DisplayWrapper}} = Me.imports;
 
   let commandManager, navManager, tileManager;
 
@@ -18,7 +18,7 @@ var {init, enable, disable} = (()=>{
   const WorkspaceSwitcherPopup = imports.ui.workspaceSwitcherPopup;
   let globalSignals;
 
-  let display, wsText;
+  let display, wsText, sysMon;
 
   const workspaceChanged = ()=>{
     const cws = DisplayWrapper.getWorkspaceManager().get_active_workspace();
@@ -48,6 +48,8 @@ var {init, enable, disable} = (()=>{
       Main.panel._rightBox.insert_child_at_index(wsText, 0);
       globalSignals.push(DisplayWrapper.getWorkspaceManager()
                          .connect('workspace-switched', workspaceChanged));
+      sysMon = new SystemMonitor.Manager;
+      Main.panel._rightBox.insert_child_at_index(sysMon.actor, 0);
     },
 
     disable() {
@@ -58,15 +60,16 @@ var {init, enable, disable} = (()=>{
       display = null;
 
       Main.panel._rightBox.remove_child(wsText);
-      wsText.destroy(); wsText = undefined;
+      wsText.destroy(); wsText = void 0;
+      sysMon.destroy(); sysMon = void 0;
 
-      navManager.destroy(); navManager = undefined;
-      tileManager.destroy(); tileManager = undefined;
-      commandManager.destroy(); commandManager = undefined;
+      navManager.destroy(); navManager = void 0;
+      tileManager.destroy(); tileManager = void 0;
+      commandManager.destroy(); commandManager = void 0;
 
       for (let i = 0; i < globalSignals.length; i++)
         DisplayWrapper.getScreen().disconnect(globalSignals[i]);
-      globalSignals = undefined;
+      globalSignals = void 0;
     },
   };
 

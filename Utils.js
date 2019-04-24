@@ -1,5 +1,5 @@
 /* global imports */
-const {Meta} = imports.gi;
+const {Meta, Clutter} = imports.gi;
 
 var pointInRect = (x, y, rect)=> rect.x < x && rect.y < y &&
     rect.x+rect.width > x && rect.y+rect.height > y;
@@ -70,3 +70,5 @@ var DisplayWrapper = {
     return global.screen || Meta.MonitorManager.get();
   },
 };
+
+var color_from_string = color => Clutter.Color.from_string(color)[1];

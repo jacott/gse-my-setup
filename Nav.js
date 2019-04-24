@@ -1,9 +1,8 @@
 /* global imports log */
 
-var {Manager} = (()=>{
-
+var Manager = (()=>{
   const {
-    gi: {St, Gio, Shell, Meta},
+    gi: {Gio, Shell, Meta},
     ui: {main: Main, appFavorites},
   } = imports;
 
@@ -256,7 +255,10 @@ var {Manager} = (()=>{
     }
 
     destroy() {
-      for(let i = 1; i < 10; ++i) Main.wm.removeKeybinding(`app-hotkey-${i}`);
+      for(let i = 1; i < 10; ++i) {
+        Main.wm.removeKeybinding(`app-hotkey-${i}`);
+        Main.wm.removeKeybinding(`hotkey-${i}`);
+      }
       Main.wm.removeKeybinding('raise-or-lower-and-focus');
       Main.wm.removeKeybinding('focus-window');
       for (const name in BETTER) Main.wm.removeKeybinding(`focus-window-${name}`);
@@ -265,5 +267,5 @@ var {Manager} = (()=>{
       this._dbusAction = null;
     }
   }
-  return {Manager};
+  return Manager;
 })();

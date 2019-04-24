@@ -3,3 +3,8 @@
   text-align: center;
   margin: .25em;
 }
+
+.ms-chart {
+  padding: .1em;
+  border: .1em solid #444;
+}
