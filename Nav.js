@@ -202,20 +202,17 @@ var Manager = (()=>{
 
       for(let i = 1; i < 10; ++i) {
         const workspace = i;
+        Main.wm.removeKeybinding(`switch-to-application-${i}`);
         Main.wm.addKeybinding(
           `app-hotkey-${i}`, this._settings,
-          Meta.KeyBindingFlags.NONE,
+          Meta.KeyBindingFlags.IGNORE_AUTOREPEAT,
           Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW,
-          ()=>{
-            this._dbusAction.activateFav(workspace);
-          });
+          ()=>{this._dbusAction.activateFav(workspace);});
         Main.wm.addKeybinding(
           `hotkey-${i}`, this._settings,
-          Meta.KeyBindingFlags.NONE,
+          Meta.KeyBindingFlags.IGNORE_AUTOREPEAT,
           Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW,
-          ()=>{
-            this._dbusAction.switchWs(workspace);
-          });
+          (display, window, binding)=>{this._dbusAction.switchWs(workspace)});
       }
 
       Main.wm.addKeybinding(
