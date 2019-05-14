@@ -134,8 +134,8 @@ var Manager = (()=>{
       for (const id in favs) {
         if (++i == num) {
           const fav = favs[id];
-          const wsm = DisplayWrapper.getWorkspaceManager();
-          let workspace = wsm.get_workspace_by_index(num-1);
+          const wsm = global.workspace_manager;
+          let workspace = wsm.get_workspace_by_index(Math.min(num, wsm.n_workspaces)-1);
           if (workspace !== null && wsm.get_active_workspace() !== workspace)
             workspace.activate(global.get_current_time());
           fav.activate();
@@ -207,7 +207,7 @@ var Manager = (()=>{
           `app-hotkey-${i}`, this._settings,
           Meta.KeyBindingFlags.IGNORE_AUTOREPEAT,
           Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW,
-          ()=>{this._dbusAction.activateFav(workspace);});
+          ()=>{this._dbusAction.activateFav(workspace)});
         Main.wm.addKeybinding(
           `hotkey-${i}`, this._settings,
           Meta.KeyBindingFlags.IGNORE_AUTOREPEAT,
