@@ -9,7 +9,7 @@ var Manager = (()=>{
 
   const Me = imports.misc.extensionUtils.getCurrentExtension();
   const {
-    Utils: {getSettings, DisplayWrapper, wsWindows, moveResize}
+    Utils: {getSettings, wsWindows, moveResize, rectIntersect}
   } = Me.imports;
 
   const timeDescCompare = (a, b)=> b.user_time - a.user_time;
@@ -25,6 +25,44 @@ var Manager = (()=>{
     return {iw, x, y, width, height};
   };
 
+  const xIntersect = (a, b)=> a.x+a.width > b.x && a.x < b.x+b.width;
+  const isAbove = (a, b)=> a.y+a.height < b.y;
+  const isLeft = (a, b)=> a.x+a.width < b.x;
+
+  const restrictMax = (max, me, limit)=>{
+    if (xIntersect(limit, me)) {
+      if (isAbove(me, limit)) {
+        if (max.b > limit.y-1) max.b = limit.y-1;
+      } else if (isAbove(limit, me)) {
+        const limit_b = limit.y+limit.height+1;
+        if (max.t < limit_b) max.t = limit_b;
+      }
+    } {
+      if (isLeft(me, limit)) {
+        if (max.r > limit.x-1) max.r = limit.x-1;
+      } else if (isLeft(limit, me)) {
+        const limit_r = limit.x+limit.width+1;
+        if (max.l < limit_r) max.l = limit_r;
+      }
+    }
+  };
+
+  const expandWindow = ()=>{
+    const fw = global.display.get_focus_window();
+    const me = fw.get_frame_rect();
+    const ss = initTile();
+    if (ss.iw === void 0) return;
+    const max = {l: ss.x, t: ss.y, r: ss.x+ss.width, b: ss.y+ss.height};
+
+    for(const mw of wsWindows()) {
+      const candidate = mw.get_frame_rect();
+      rectIntersect(me, candidate) || restrictMax(max, me, candidate);
+    }
+
+    moveResize(fw, max.l, max.t, max.r-max.l, max.b-max.t);
+
+    log(JSON.stringify(max));
+  };
 
   class Manager {
     constructor(commandManager) {
@@ -82,6 +120,8 @@ var Manager = (()=>{
           }
         }
       });
+
+      commandManager.addCommand('x', 'e[x]pand', expandWindow);
     }
 
 
