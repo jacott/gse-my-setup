@@ -58,17 +58,11 @@ var {getSettings} = (()=>{
 })();
 
 var DisplayWrapper = {
-  getScreen() {
-    return global.screen || global.display;
-  },
+  getScreen: ()=> global.display,
 
-  getWorkspaceManager() {
-    return global.screen || global.workspace_manager;
-  },
+  getWorkspaceManager: ()=>  global.workspace_manager,
 
-  getMonitorManager() {
-    return global.screen || Meta.MonitorManager.get();
-  },
+  getMonitorManager: ()=> Meta.MonitorManager.get(),
 };
 
 var color_from_string = color => Clutter.Color.from_string(color)[1];
