@@ -13,6 +13,8 @@ var rectEnclosed = (a, b, margin=0)=> a.y-margin > b.y &&
     a.x-margin > b.x &&
     a.x+a.width+margin < b.x+b.margin;
 
+var copyRect = r =>({x: r.x, y: r.y, width: r.width, height: r.height});
+
 var wsWindows = function *(cws=DisplayWrapper.getWorkspaceManager().get_active_workspace()) {
   const windows = cws.list_windows();
 
