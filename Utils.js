@@ -4,9 +4,14 @@ const {Meta, Clutter} = imports.gi;
 var pointInRect = (x, y, rect)=> rect.x < x && rect.y < y &&
     rect.x+rect.width > x && rect.y+rect.height > y;
 
-var rectIntersect = (r1, r2, margin=0)=> r1.y+margin <= r2.y+r2.height &&
-    r1.y+r1.height >= r2.y+margin &&
-    r1.x+margin <= r2.x+r2.width && r1.x+r1.width >= r2.x+margin;
+var rectIntersect = (a, b, margin=0)=> a.y+margin <= b.y+b.height &&
+    a.y+a.height >= b.y+margin &&
+    a.x+margin <= b.x+b.width && a.x+a.width >= b.x+margin;
+
+var rectEnclosed = (a, b, margin=0)=> a.y-margin > b.y &&
+    a.y+a.height+margin < b.y+b.margin &&
+    a.x-margin > b.x &&
+    a.x+a.width+margin < b.x+b.margin;
 
 var wsWindows = function *(cws=DisplayWrapper.getWorkspaceManager().get_active_workspace()) {
   const windows = cws.list_windows();
