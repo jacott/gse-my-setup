@@ -12,6 +12,10 @@ var Manager = (()=>{
     Utils: {getSettings, wsWindows, moveResize, rectIntersect, rectEnclosed, copyRect}
   } = Me.imports;
 
+  // const logr = (st)=>{
+  //   log(JSON.stringify(copyRect(st)));
+  // };
+
   const timeDescCompare = (a, b)=> b.user_time - a.user_time;
 
   const initTile = ()=>{
@@ -27,22 +31,26 @@ var Manager = (()=>{
 
   const xIntersect = (a, b)=> a.x+a.width > b.x && a.x < b.x+b.width;
   const yIntersect = (a, b)=> a.y+a.height > b.y && a.y < b.y+b.height;
-  const isAbove = (a, b)=> a.y+a.height < b.y;
-  const isLeft = (a, b)=> a.x+a.width < b.x;
+  const isAbove = (a, b)=> a.y+a.height <= b.y;
+  const isLeft = (a, b)=> a.x+a.width <= b.x;
 
   const restrictMax = (max, me, limit)=>{
+    if (limit.x+limit.width <= max.l || limit.x >= max.r ||
+        limit.y+limit.height <= max.t || limit.y >= max.b)
+      return;
     if (xIntersect(limit, me)) {
       if (isAbove(me, limit)) {
-        if (max.b > limit.y-1) max.b = limit.y-1;
+        if (max.b > limit.y-1) max.b = limit.y;
       } else if (isAbove(limit, me)) {
-        const limit_b = limit.y+limit.height+1;
+        const limit_b = limit.y+limit.height;
         if (max.t < limit_b) max.t = limit_b;
       }
     } {
       if (isLeft(me, limit)) {
-        if (max.r > limit.x-1) max.r = limit.x-1;
+        if (max.r > limit.x-1) max.r = limit.x;
       } else if (isLeft(limit, me)) {
-        const limit_r = limit.x+limit.width+1;
+        log ("isLeft limit < me");
+        const limit_r = limit.x+limit.width;
         if (max.l < limit_r) max.l = limit_r;
       }
     }
@@ -53,7 +61,7 @@ var Manager = (()=>{
     for(const mw of wsWindows()) {
       if (mw === fw) continue;
       const candidate = mw.get_frame_rect();
-      rectIntersect(me, candidate) || restrictMax(max, me, candidate);
+      rectIntersect(me, candidate, 1) || restrictMax(max, me, candidate);
     }
   };
 
