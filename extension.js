@@ -7,7 +7,7 @@ var {init, enable, disable} = (()=>{
   const {main: Main, keyboard: {Keyboard}} = imports.ui;
 
   const Me = imports.misc.extensionUtils.getCurrentExtension();
-  const {SystemMonitor, Command, Nav, Tile, Utils: {DisplayWrapper}} = Me.imports;
+  const {SystemMonitor, SoundControl, Command, Nav, Tile, Utils: {DisplayWrapper}} = Me.imports;
 
   let commandManager, navManager, tileManager;
 
@@ -18,7 +18,7 @@ var {init, enable, disable} = (()=>{
   const WorkspaceSwitcherPopup = imports.ui.workspaceSwitcherPopup;
   let globalSignals;
 
-  let display, wsText, sysMon;
+  let display, wsText, sysMon, soundCtrl;
 
   const workspaceChanged = ()=>{
     const cws = DisplayWrapper.getWorkspaceManager().get_active_workspace();
@@ -42,6 +42,7 @@ var {init, enable, disable} = (()=>{
 
       navManager = new Nav.Manager(commandManager);
       tileManager = new Tile.Manager(commandManager);
+      soundCtrl = new SoundControl.Manager(commandManager);
 
       wsText = new St.Label({ text: "", style_class: 'ws-text' });
       workspaceChanged();
@@ -50,6 +51,7 @@ var {init, enable, disable} = (()=>{
                          .connect('workspace-switched', workspaceChanged));
       sysMon = new SystemMonitor.Manager;
       Main.panel._rightBox.insert_child_at_index(sysMon.actor, 0);
+      Main.panel._rightBox.insert_child_at_index(soundCtrl.actor, 0);
     },
 
     disable() {
@@ -62,6 +64,7 @@ var {init, enable, disable} = (()=>{
       Main.panel._rightBox.remove_child(wsText);
       wsText.destroy(); wsText = void 0;
       sysMon.destroy(); sysMon = void 0;
+      soundCtrl.destroy(); soundCtrl = void 0;
 
       navManager.destroy(); navManager = void 0;
       tileManager.destroy(); tileManager = void 0;
