@@ -1,7 +1,7 @@
 /* global imports log */
 
 var Manager = (()=>{
-  const {St, Gio, GLib, Clutter, Gvc} = imports.gi;
+  const {St, Gio, GLib, Clutter, Gvc, Shell} = imports.gi;
   const {panel, status: {volume}} = imports.ui;
 
   const Me = imports.misc.extensionUtils.getCurrentExtension();
@@ -58,7 +58,15 @@ var Manager = (()=>{
       commandManager.addCommand('o', 'sound-[o]utput', ()=>{this.nextOutput()});
       const mixer = this._mixer = volume.getMixerControl();
       this._signals = [];
-      this.actor = new St.Icon({style_class: 'popup-menu-icon sound-icon', icon_name: "audio-card"});
+      this.icon = new St.Icon({style_class: 'popup-menu-icon sound-icon', icon_name: "audio-card"});
+
+      const button = this.actor = new St.Button({ style_class: 'sound-device' });
+      button.add_actor(this.icon);
+      button.connect('clicked', ()=>{
+        let appSys = Shell.AppSystem.get_default();
+        let soundApp = appSys.lookup_app('gnome-sound-panel.desktop');
+        soundApp && soundApp.activate();
+      });
 
       if (mixer.get_state() === Gvc.MixerControlState.READY) {
         init(this);
@@ -70,8 +78,7 @@ var Manager = (()=>{
 
     showActive(dev) {
       const name = dev.get_icon_name() || '';
-      this.actor.icon_name = (name.trim() || "audio-card") + "-symbolic";
-      this.actor.title = dev.description;
+      this.icon.icon_name = (name.trim() || "audio-card") + "-symbolic";
     }
 
     nextOutput() {

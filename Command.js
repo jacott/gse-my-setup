@@ -74,7 +74,7 @@ var Manager = (()=>{
     constructor() {
       this._settings = getSettings();
 
-      this.keyMap = [];
+      this.keyMap = {};
 
       Main.wm.addKeybinding(
         'command-menu', this._settings,
