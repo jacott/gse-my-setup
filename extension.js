@@ -7,7 +7,7 @@ var {init, enable, disable} = (()=>{
   const {main: Main, keyboard: {Keyboard}} = imports.ui;
 
   const Me = imports.misc.extensionUtils.getCurrentExtension();
-  const {SystemMonitor, SoundControl, Command, Nav, Tile, Utils: {DisplayWrapper}} = Me.imports;
+  const {SystemMonitor, SoundControl, CommandManager, NavManager, TileManager, Utils: {DisplayWrapper}} = Me.imports;
 
   let commandManager, navManager, tileManager;
 
@@ -38,18 +38,18 @@ var {init, enable, disable} = (()=>{
       display = WorkspaceSwitcherPopup.WorkspaceSwitcherPopup.prototype.display;
       WorkspaceSwitcherPopup.WorkspaceSwitcherPopup.prototype.display = ()=>{};
 
-      commandManager = new Command.Manager();
+      commandManager = new CommandManager();
 
-      navManager = new Nav.Manager(commandManager);
-      tileManager = new Tile.Manager(commandManager);
-      soundCtrl = new SoundControl.Manager(commandManager);
+      navManager = new NavManager(commandManager);
+      tileManager = new TileManager(commandManager);
+      soundCtrl = new SoundControl(commandManager);
 
       wsText = new St.Label({ text: "", style_class: 'ws-text' });
       workspaceChanged();
       Main.panel._rightBox.insert_child_at_index(wsText, 0);
       globalSignals.push(DisplayWrapper.getWorkspaceManager()
                          .connect('workspace-switched', workspaceChanged));
-      sysMon = new SystemMonitor.Manager;
+      sysMon = new SystemMonitor;
       Main.panel._rightBox.insert_child_at_index(sysMon.actor, 0);
       Main.panel._rightBox.insert_child_at_index(soundCtrl.actor, 0);
     },

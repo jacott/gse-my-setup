@@ -1,6 +1,6 @@
 /* global imports log */
 
-var Manager = (()=>{
+(()=>{
   const {
     gi: {St, Gio, Gtk, Shell, Meta, Clutter},
     ui: {main: Main, modalDialog: {ModalDialog}},
@@ -129,7 +129,7 @@ var Manager = (()=>{
       moveResize(fw, me.x, me.y, me.width, me.height);
   };
 
-  class Manager {
+  class TileManager {
     constructor(commandManager) {
       commandManager.addCommand('1', '[1]column', ()=>{
         const iw = Array.from(wsWindows()).sort(timeDescCompare);
@@ -191,5 +191,5 @@ var Manager = (()=>{
     }
   }
 
-  return Manager;
+  Me.imports.TileManager = TileManager;
 })();

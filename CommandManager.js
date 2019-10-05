@@ -1,6 +1,6 @@
 /* global imports log */
 
-var Manager = (()=>{
+(()=>{
   const mod$ = Symbol(), name$ = Symbol();
 
   const {
@@ -16,8 +16,10 @@ var Manager = (()=>{
     Utils: {getSettings}
   } = Me.imports;
 
+  const mapLabel = map => (map[name$] || []).join(' ');
+
   class CommandDialog extends ModalDialog {
-    constructor() {
+    constructor(map) {
       super({
         shellReactive: true,
         styleClass: 'command-dialog headline',
@@ -25,7 +27,8 @@ var Manager = (()=>{
         destroyOnClose: false,
       });
 
-      const label = this._label = new St.Label({style_class: 'command-dialog-label', text: ("")});
+      const label = this._label = new St.Label({
+        style_class: 'command-dialog-label', text: mapLabel(map)});
       this.contentLayout.add(label, {x_fill: false, x_align: St.Align.START, y_align: St.Align.START});
 
       this.setInitialKeyFocus(label);
@@ -59,9 +62,9 @@ var Manager = (()=>{
     const mod = reduceMod(event.get_state());
     if (mod != 0) {
       let mm = map[mod$];
-      if (mm !== undefined) {
+      if (mm !== void 0) {
         mm = mm[mod];
-        if (mm !== undefined)
+        if (mm !== void 0)
           map = mm;
       }
     }
@@ -69,8 +72,7 @@ var Manager = (()=>{
     return map[event.get_key_symbol()];
   };
 
-
-  class Manager {
+  class CommandManager {
     constructor() {
       this._settings = getSettings();
 
@@ -79,14 +81,9 @@ var Manager = (()=>{
       Main.wm.addKeybinding(
         'command-menu', this._settings,
         Meta.KeyBindingFlags.NONE,
-        Shell.ActionMode.NORMAL,
+        Shell.ActionMode.ALL,
         ()=>this.commandDialog()
       );
-    }
-
-    setName(map) {
-      const label = this._commandDialog._label;
-      label.text = (map[name$] || []).join(' ');
     }
 
     addCommand(keySeq, name, command) {
@@ -102,19 +99,20 @@ var Manager = (()=>{
     }
 
     commandDialog() {
+      let map = this.keyMap;
       if (this._commandDialog == null)
-        this._commandDialog = new CommandDialog();
+        this._commandDialog = new CommandDialog(map);
+      else
+        this._commandDialog._label.text = mapLabel(map);
       this._commandDialog.open();
 
       let capturedEventId;
-      let map = this.keyMap;
 
-      this.setName(map);
 
       const onCapturedEvent = (actor, event)=>{
         const type = event.type();
-        const press = (type == Clutter.EventType.KEY_PRESS);
-        const release = (type == Clutter.EventType.KEY_RELEASE);
+        const press = type == Clutter.EventType.KEY_PRESS;
+        const release = type == Clutter.EventType.KEY_RELEASE;
 
         if (! press && ! release) return Clutter.EVENT_PROPAGATE;
 
@@ -123,16 +121,16 @@ var Manager = (()=>{
         if (press) {
           const func = lookup(map, event);
           if (typeof func === 'function') {
-            map = func(this, event) ? this.keyMap : undefined;
+            map = func(this, event) ? this.keyMap : void 0;
           } else {
             map = func;
           }
 
-          if (map === undefined) {
+          if (map === void 0) {
             global.stage.disconnect(capturedEventId);
             this._commandDialog.close();
           } else
-            this.setName(map);
+            this._commandDialog._label.text = mapLabel(map);
         }
 
         return Clutter.EVENT_STOP;
@@ -146,5 +144,5 @@ var Manager = (()=>{
     }
   }
 
-  return Manager;
+  Me.imports.CommandManager = CommandManager;
 })();

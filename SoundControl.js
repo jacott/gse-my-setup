@@ -1,6 +1,6 @@
 /* global imports log */
 
-var Manager = (()=>{
+(()=>{
   const {St, Gio, GLib, Clutter, Gvc, Shell} = imports.gi;
   const {panel, status: {volume}} = imports.ui;
 
@@ -70,9 +70,11 @@ var Manager = (()=>{
 
       if (mixer.get_state() === Gvc.MixerControlState.READY) {
         init(this);
-      }
-      else {
-        this._signals.push(mixer.connect("state-changed", ()=>{init(this)}));
+      } else {
+        this._signals.push(mixer.connect("state-changed", ()=>{
+          this._mixer.disconnect(this._signals.pop());
+          init(this);
+        }));
       }
     }
 
@@ -96,5 +98,5 @@ var Manager = (()=>{
     }
   }
 
-  return SoundControl;
+  Me.imports.SoundControl = SoundControl;
 })();

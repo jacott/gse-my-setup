@@ -1,6 +1,6 @@
 /* global imports log */
 
-var Manager = (()=>{
+(()=>{
   const {St, Gio, GLib, Clutter} = imports.gi;
   const {panel} = imports.ui;
 
@@ -88,5 +88,5 @@ var Manager = (()=>{
     }
   }
 
-  return SystemMonitor;
+  Me.imports.SystemMonitor = SystemMonitor;
 })();

@@ -1,6 +1,6 @@
 /* global imports log */
 
-var Manager = (()=>{
+(()=>{
   const {
     gi: {Gio, Shell, Meta},
     ui: {main: Main, appFavorites},
@@ -194,7 +194,7 @@ var Manager = (()=>{
   };
 
 
-  class Manager {
+  class NavManager {
     constructor(commandManager) {
       this._settings = getSettings();
 
@@ -264,5 +264,6 @@ var Manager = (()=>{
       this._dbusAction = null;
     }
   }
-  return Manager;
+
+  Me.imports.NavManager = NavManager;
 })();
