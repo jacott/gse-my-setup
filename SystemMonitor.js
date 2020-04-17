@@ -84,7 +84,7 @@
     destroy() {
       this.actor.destroy();
       this.actor = void 0;
-      this._stat.close(null);
+      this._statStream.close(null);
     }
   }
 

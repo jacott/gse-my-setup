@@ -4,7 +4,7 @@
   const mod$ = Symbol(), name$ = Symbol();
 
   const {
-    gi: {St, Gio, Gtk, Shell, Meta, Clutter},
+    gi: {St, Gio, Gtk, Shell, Meta, Clutter, GObject},
     ui: {main: Main, modalDialog: {ModalDialog}},
     lang: Lang,
   } = imports;
@@ -18,9 +18,9 @@
 
   const mapLabel = map => (map[name$] || []).join(' ');
 
-  class CommandDialog extends ModalDialog {
-    constructor(map) {
-      super({
+  const CommandDialog = GObject.registerClass({GTypeName: 'CommandDialog'}, class CommandDialog extends ModalDialog {
+    _init(map) {
+      super._init({
         shellReactive: true,
         styleClass: 'command-dialog headline',
         shouldFadeIn: false,
@@ -33,7 +33,7 @@
 
       this.setInitialKeyFocus(label);
     }
-  }
+  });
 
   const reduceMod = (raw)=>{
     let mod = 0;

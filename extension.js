@@ -11,7 +11,7 @@ var {init, enable, disable} = (()=>{
 
   let commandManager, navManager, tileManager;
 
-  let _originalLastDeviceIsTouchscreen;
+  // let _originalLastDeviceIsTouchscreen;
 
   const _modifiedLastDeviceIsTouchscreen = ()=> false;
 
@@ -32,8 +32,8 @@ var {init, enable, disable} = (()=>{
 
     enable() {
       globalSignals = [];
-      _originalLastDeviceIsTouchscreen = Keyboard.prototype._lastDeviceIsTouchscreen;
-      Keyboard.prototype._lastDeviceIsTouchscreen = _modifiedLastDeviceIsTouchscreen;
+      // _originalLastDeviceIsTouchscreen = Keyboard.prototype._lastDeviceIsTouchscreen;
+      // Keyboard.prototype._lastDeviceIsTouchscreen = _modifiedLastDeviceIsTouchscreen;
 
       display = WorkspaceSwitcherPopup.WorkspaceSwitcherPopup.prototype.display;
       WorkspaceSwitcherPopup.WorkspaceSwitcherPopup.prototype.display = ()=>{};
@@ -55,8 +55,8 @@ var {init, enable, disable} = (()=>{
     },
 
     disable() {
-      Keyboard.prototype._lastDeviceIsTouchscreen = _originalLastDeviceIsTouchscreen;
-      _originalLastDeviceIsTouchscreen = null;
+      // Keyboard.prototype._lastDeviceIsTouchscreen = _originalLastDeviceIsTouchscreen;
+      // _originalLastDeviceIsTouchscreen = null;
 
       WorkspaceSwitcherPopup.WorkspaceSwitcherPopup.prototype.display = display;
       display = null;

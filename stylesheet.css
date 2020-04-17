@@ -1,5 +1,6 @@
 
 .ws-text {
+  color: #fff;
   text-align: center;
   margin: .25em;
 }
@@ -10,5 +11,6 @@
 }
 
 .sound-device {
+  color: #fff;
   padding: 0 .2em;
 }

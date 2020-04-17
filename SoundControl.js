@@ -10,7 +10,7 @@
     const devs = [];
     for(let i = 1; i < 20; ++i) {
       const dev = mixer.lookup_output_id(i);
-      if (dev == null) break;
+      if (dev == null) continue;
       if (dev.get_stream_id()) {
         devs.push(dev);
       }
@@ -86,7 +86,7 @@
     nextOutput() {
       const dev = nextDevice(this._mixer);
       if (dev !== void 0) {
-        //            log(i+": "+(dev && dev.description)+", o: "+dev.origin+", pn: "+dev.port_name);
+        // log(i+": "+(dev && dev.description)+", o: "+dev.origin+", pn: "+dev.port_name);
         this._mixer.change_output(dev);
       }
     }
@@ -95,6 +95,7 @@
       for (const id of this._signals) {
         this._mixer.disconnect(id);
       }
+      this.icon.destroy();
     }
   }
 
