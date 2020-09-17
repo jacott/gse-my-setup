@@ -14,3 +14,7 @@
   color: #fff;
   padding: 0 .2em;
 }
+
+.command-dialog.headline {
+  width: 1200px;
+}
