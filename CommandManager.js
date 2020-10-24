@@ -28,8 +28,9 @@
       });
 
       const label = this._label = new St.Label({
-        style_class: 'command-dialog-label', text: mapLabel(map)});
-      this.contentLayout.add(label, {x_fill: false, x_align: St.Align.START, y_align: St.Align.START});
+        style_class: 'command-dialog-label', text: mapLabel(map),
+        x_expand: false, x_align: St.Align.START, y_align: St.Align.START});
+      this.contentLayout.add(label);
 
       this.setInitialKeyFocus(label);
     }
