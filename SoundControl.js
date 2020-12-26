@@ -8,10 +8,12 @@
 
   const getDevices = (mixer)=>{
     const devs = [];
-    for(let i = 1; i < 20; ++i) {
+    for(let i = 1; i < 40; ++i) {
       const dev = mixer.lookup_output_id(i);
-      if (dev == null) continue;
-      if (dev.get_stream_id()) {
+      if (dev != null) {
+
+        log(i+" DEBUG: "+dev.description+", o: "+dev.origin+", pn: "+dev.port_name+", sid: "+dev.get_stream_id()
+            +", has ports: "+dev.has_ports()+", XX: "+dev.get_port());
         devs.push(dev);
       }
     }
@@ -20,11 +22,11 @@
 
   const getActiveIndex = (mixer, devs)=>{
     const def = mixer.get_default_sink();
+    const stream_port = def.get_port();
     for(let i = 0; i < devs.length; ++i) {
       const dev = devs[i];
       const stream = mixer.get_stream_from_device(dev);
       if (def === stream) {
-        const stream_port = stream.get_port();
         const uidevice_port = dev.get_port();
 
         if ((! stream_port && ! uidevice_port) ||
