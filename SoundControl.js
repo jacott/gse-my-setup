@@ -58,27 +58,27 @@
 
   class SoundControl {
     constructor(commandManager) {
-      commandManager.addCommand('o', 'sound-[o]utput', ()=>{this.nextOutput()});
-      const mixer = this._mixer = volume.getMixerControl();
-      this._signals = [];
-      this.icon = new St.Icon({style_class: 'popup-menu-icon sound-icon', icon_name: "audio-card"});
+      // commandManager.addCommand('o', 'sound-[o]utput', ()=>{this.nextOutput()});
+      // const mixer = this._mixer = volume.getMixerControl();
+      // this._signals = [];
+      // this.icon = new St.Icon({style_class: 'popup-menu-icon sound-icon', icon_name: "audio-card"});
 
-      const button = this.actor = new St.Button({ style_class: 'sound-device' });
-      button.add_actor(this.icon);
-      button.connect('clicked', ()=>{
-        let appSys = Shell.AppSystem.get_default();
-        let soundApp = appSys.lookup_app('gnome-sound-panel.desktop');
-        soundApp && soundApp.activate();
-      });
+      // const button = this.actor = new St.Button({ style_class: 'sound-device' });
+      // button.add_actor(this.icon);
+      // button.connect('clicked', ()=>{
+      //   let appSys = Shell.AppSystem.get_default();
+      //   let soundApp = appSys.lookup_app('gnome-sound-panel.desktop');
+      //   soundApp && soundApp.activate();
+      // });
 
-      if (mixer.get_state() === Gvc.MixerControlState.READY) {
-        init(this);
-      } else {
-        this._signals.push(mixer.connect("state-changed", ()=>{
-          this._mixer.disconnect(this._signals.pop());
-          init(this);
-        }));
-      }
+      // if (mixer.get_state() === Gvc.MixerControlState.READY) {
+      //   init(this);
+      // } else {
+      //   this._signals.push(mixer.connect("state-changed", ()=>{
+      //     this._mixer.disconnect(this._signals.pop());
+      //     init(this);
+      //   }));
+      // }
     }
 
     showActive(dev) {
@@ -87,20 +87,20 @@
     }
 
     nextOutput() {
-      const dev = nextDevice(this._mixer);
-      if (dev !== void 0) {
-        const stream = this._mixer.get_stream_from_device(dev);
-        log("next active: "+(dev && dev.description)+", o: "+dev.origin+", pn: "+dev.port_name+(stream ? "st" : "ns"));
-//        this._mixer.set_default_sink(stream);
-        this._mixer.change_output(dev);
-      }
+//       const dev = nextDevice(this._mixer);
+//       if (dev !== void 0) {
+//         const stream = this._mixer.get_stream_from_device(dev);
+//         log("next active: "+(dev && dev.description)+", o: "+dev.origin+", pn: "+dev.port_name+(stream ? "st" : "ns"));
+// //        this._mixer.set_default_sink(stream);
+//         this._mixer.change_output(dev);
+//       }
     }
 
     destroy() {
-      for (const id of this._signals) {
-        this._mixer.disconnect(id);
-      }
-      this.icon.destroy();
+      // for (const id of this._signals) {
+      //   this._mixer.disconnect(id);
+      // }
+      //      this.icon.destroy();
     }
   }
 
