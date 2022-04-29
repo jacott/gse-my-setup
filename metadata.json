@@ -1,1 +1,10 @@
-{"name": "My Setup", "description": "my local setup", "uuid": "my-setup@geoffjacobsen.gmail.com", "shell-version": ["3.32"]}
+{
+  "name": "My Setup",
+  "description": "my local setup",
+  "uuid": "my-setup@geoffjacobsen.gmail.com",
+  "shell-version": [
+    "40.0",
+    "41",
+    "42"
+  ]
+}

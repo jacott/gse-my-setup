@@ -10,10 +10,10 @@
     const devs = [];
     for(let i = 1; i < 40; ++i) {
       const dev = mixer.lookup_output_id(i);
-      if (dev != null) {
-
+      if (dev != null && dev.get_active_profile() != null) {
         log(i+" DEBUG: "+dev.description+", o: "+dev.origin+", pn: "+dev.port_name+", sid: "+dev.get_stream_id()
-            +", has ports: "+dev.has_ports()+", XX: "+dev.get_port());
+            +", has ports: "+dev.has_ports()+", XX: "+dev.get_port()+", sbh: "+dev.should_profiles_be_hidden()
+            +", bp: "+dev.get_active_profile());
         devs.push(dev);
       }
     }
@@ -35,12 +35,13 @@
         }
       }
     }
-    return -1;
+    return devs.length-1;
   };
 
   const nextDevice = (mixer)=>{
     const devs = getDevices(mixer);
     const activeIndex = getActiveIndex(mixer, devs);
+    log("activeIndex: "+activeIndex);
     if (activeIndex != -1)
       return devs[(activeIndex+1)%devs.length];
   };
@@ -88,7 +89,9 @@
     nextOutput() {
       const dev = nextDevice(this._mixer);
       if (dev !== void 0) {
-        // log(i+": "+(dev && dev.description)+", o: "+dev.origin+", pn: "+dev.port_name);
+        const stream = this._mixer.get_stream_from_device(dev);
+        log("next active: "+(dev && dev.description)+", o: "+dev.origin+", pn: "+dev.port_name+(stream ? "st" : "ns"));
+//        this._mixer.set_default_sink(stream);
         this._mixer.change_output(dev);
       }
     }
