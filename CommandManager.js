@@ -105,10 +105,11 @@
         this._commandDialog = new CommandDialog(map);
       else
         this._commandDialog._label.text = mapLabel(map);
+
       this._commandDialog.open();
 
-      let capturedEventId;
 
+      let capturedEventId;
 
       const onCapturedEvent = (actor, event)=>{
         const type = event.type();
@@ -128,7 +129,7 @@
           }
 
           if (map === void 0) {
-            global.stage.disconnect(capturedEventId);
+            this._commandDialog.disconnect(capturedEventId);
             this._commandDialog.close();
           } else
             this._commandDialog._label.text = mapLabel(map);
@@ -137,7 +138,7 @@
         return Clutter.EVENT_STOP;
       };
 
-      capturedEventId = global.stage.connect('captured-event', onCapturedEvent);
+      capturedEventId = this._commandDialog.connect('captured-event', onCapturedEvent);
     }
 
     destroy() {
