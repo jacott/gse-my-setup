@@ -235,20 +235,20 @@
         ()=>{raiseOrLower()},
       );
 
-      for (const name in BETTER) {
-        Main.wm.addKeybinding(
-          `swap-window-${name}`, this._settings,
-          Meta.KeyBindingFlags.NONE,
-          Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW,
-          ()=>{swapWindowDir(BETTER[name])},
-        );
-        Main.wm.addKeybinding(
-          `focus-window-${name}`, this._settings,
-          Meta.KeyBindingFlags.NONE,
-          Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW,
-          ()=>{focusWindowDir(BETTER[name])},
-        );
-      }
+      // for (const name in BETTER) {
+      //   Main.wm.addKeybinding(
+      //     `swap-window-${name}`, this._settings,
+      //     Meta.KeyBindingFlags.NONE,
+      //     Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW,
+      //     ()=>{swapWindowDir(BETTER[name])},
+      //   );
+      //   Main.wm.addKeybinding(
+      //     `focus-window-${name}`, this._settings,
+      //     Meta.KeyBindingFlags.NONE,
+      //     Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW,
+      //     ()=>{focusWindowDir(BETTER[name])},
+      //   );
+      // }
     }
 
     destroy() {
