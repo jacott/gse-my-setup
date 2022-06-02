@@ -117,7 +117,13 @@
     }
 
     window.lower();
-    focusPointer(window);
+    for(let i = windows.length-1; i >= 0; --i) {
+      const mw = windows[i];
+      if (mw !== window) {
+        mw.focus(global.get_current_time());
+        break;
+      }
+    }
   };
 
   class DBusAction {
