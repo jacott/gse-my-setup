@@ -15,13 +15,15 @@ var rectEnclosed = (a, b, margin=0)=> a.y-margin > b.y &&
 
 var copyRect = r =>({x: r.x, y: r.y, width: r.width, height: r.height});
 
-var wsWindows = function *(cws=DisplayWrapper.getWorkspaceManager().get_active_workspace()) {
+var wsWindows = function *(cws=DisplayWrapper.getWorkspaceManager().get_active_workspace(), monitor) {
   const windows = cws.list_windows();
 
   for(let i = windows.length-1; i >= 0; --i) {
     const mw = windows[i];
-    if (mw.get_window_type() == 0 && mw.showing_on_its_workspace())
+    if (mw.get_window_type() == 0 && mw.showing_on_its_workspace() &&
+        (monitor === void 0 || mw.get_monitor() === monitor)) {
       yield mw;
+    }
   }
 };
 

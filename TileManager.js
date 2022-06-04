@@ -19,14 +19,39 @@
   const timeDescCompare = (a, b)=> b.user_time - a.user_time;
 
   const initTile = ()=>{
-    const iw = Array.from(wsWindows()).sort(timeDescCompare);
-    const iwLen = iw.length;
-    if (iwLen == 0) return {};
+    const mon = global.display.get_current_monitor();
+    const iw = Array.from(wsWindows(void 0, mon)).sort(timeDescCompare);
+    if (iw.length == 0) return {};
 
     const iwm = iw[0];
     const ws = iwm.get_workspace();
-    const {x, y, width, height} = ws.get_work_area_for_monitor(iwm.get_monitor());
+    const {x, y, width, height} = ws.get_work_area_for_monitor(mon);
     return {iw, x, y, width, height};
+  };
+
+  const tileWindows = () => {
+    const ss = initTile();
+    const {iw} = ss;
+    if (iw === void 0) return;
+    const rects = iw.map((w) => w.get_frame_rect());
+    for(let i = rects.length - 1; i >= 0; --i) {
+      const a = rects[i];
+      for(const b of rects) {
+        if (a === b) continue;
+        rectEnclosed(a, b) || rectEnclosed(b, a) || ! rectIntersect(a, b) ||
+          shrinkRect(a, b);
+      }
+    }
+
+    for(let i = 0; i < rects.length; ++i) {
+      const a = rects[i];
+      const max = {l: ss.x, t: ss.y, r: ss.x+ss.width, b: ss.y+ss.height};
+      for (const b of rects) {
+        if (a === b) continue;
+        rectIntersect(a, b, 1) || restrictMax(max, a, b);
+      }
+      moveResize(iw[i], max.l, max.t, max.r-max.l, max.b-max.t);
+    }
   };
 
   const xIntersect = (a, b)=> a.x+a.width > b.x && a.x < b.x+b.width;
@@ -49,16 +74,15 @@
       if (isLeft(me, limit)) {
         if (max.r > limit.x-1) max.r = limit.x;
       } else if (isLeft(limit, me)) {
-        log ("isLeft limit < me");
         const limit_r = limit.x+limit.width;
         if (max.l < limit_r) max.l = limit_r;
       }
     }
   };
 
-  const expandRect = (fw, max)=>{
+  const expandRect = (fw, max, windows)=>{
     const me = fw.get_frame_rect();
-    for(const mw of wsWindows()) {
+    for(const mw of windows) {
       if (mw === fw) continue;
       const candidate = mw.get_frame_rect();
       rectIntersect(me, candidate, 1) || restrictMax(max, me, candidate);
@@ -68,24 +92,25 @@
   const expandWindow = ()=>{
     const ss = initTile();
     if (ss.iw === void 0) return;
+    const fw = ss.iw[0];
+
     const max = {l: ss.x, t: ss.y, r: ss.x+ss.width, b: ss.y+ss.height};
 
-    const fw = global.display.get_focus_window();
-    expandRect(fw, max);
+    expandRect(fw, max, ss.iw);
     moveResize(fw, max.l, max.t, max.r-max.l, max.b-max.t);
   };
 
-  const shrinkMe = (me, limit)=>{
-    const xi = xIntersect(me, limit);
-    const yi = yIntersect(me, limit);
+  const shrinkRect = (rect, limit)=>{
+    const xi = xIntersect(rect, limit);
+    const yi = yIntersect(rect, limit);
     const limit_r = limit.x+limit.width + 1;
     const limit_b = limit.y+limit.height + 1;
-    let dl = xi && limit.x < me.x ? me.x - limit_r : 1;
-    let dt = yi && limit.y < me.y ? me.y - limit_b : 1;
-    const me_r = me.x + me.width + 1;
-    const me_b = me.y + me.height + 1;
-    let dr = xi && limit_r > me_r ? limit.x - me_r : 1;
-    let db = yi && limit_b > me_b ? limit.y - me_b : 1;
+    let dl = xi && limit.x < rect.x ? rect.x - limit_r : 1;
+    let dt = yi && limit.y < rect.y ? rect.y - limit_b : 1;
+    const rect_r = rect.x + rect.width + 1;
+    const rect_b = rect.y + rect.height + 1;
+    let dr = xi && limit_r > rect_r ? limit.x - rect_r : 1;
+    let db = yi && limit_b > rect_b ? limit.y - rect_b : 1;
 
     if (dr < 0 && dl < 0)
       dr = dl = 1;
@@ -98,31 +123,33 @@
 
     if ((dh > 0 || dw > dh) && dw < 0) {
       if (dw == dl) {
-        me.width += dl;
-        me.x = limit_r;
+        rect.width += dl;
+        rect.x = limit_r;
       } else {
-        me.width += dr;
+        rect.width += dr;
       }
     } else if (dh < 0) {
        if (dh == dt) {
-        me.height += dt;
-        me.y = limit_b;
+        rect.height += dt;
+        rect.y = limit_b;
       } else {
-        me.height += db;
+        rect.height += db;
       }
     }
   };
 
   const contractWindow = ()=>{
-    const fw = global.display.get_focus_window();
+    const {iw} = initTile();
+    if (iw === void 0) return;
+    const fw = iw[0];
     const orig = fw.get_frame_rect();
     const me = copyRect(orig);
 
-    for(const mw of wsWindows()) {
+    for(const mw of iw) {
       if (mw === fw) continue;
       const limit = mw.get_frame_rect();
       rectEnclosed(me, limit) || rectEnclosed(limit, me) || ! rectIntersect(me, limit) ||
-        shrinkMe(me, limit);
+        shrinkRect(me, limit);
     }
 
     if (me.width < orig.width || me.height < orig.height)
@@ -182,6 +209,7 @@
         }
       });
 
+      commandManager.addCommand('t', '[t]ile', tileWindows);
       commandManager.addCommand('x', 'e[x]pand', expandWindow);
       commandManager.addCommand('c', '[c]ontract', contractWindow);
     }
