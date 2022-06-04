@@ -32,11 +32,7 @@ var moveResize = (mw, x, y, w, h)=>{
   mw.move_frame(true, x, y)
 };
 
-var moveResizeRect = (mw, rect)=>{
-  const m = mw.get_maximized();
-  if (m != 0) mw.unmaximize(m);
-  mw.move_resize_frame(true, rect.x, rect.y, rect.width, rect.height);
-};
+var moveResizeRect = (mw, rect)=> {moveResize(mw, rect.x, rect.y, rect.width, rect.height)}
 
 var {getSettings} = (()=>{
   const {Gio} = imports.gi;

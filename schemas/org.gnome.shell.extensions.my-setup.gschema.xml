@@ -116,55 +116,55 @@
       </description>
     </key>
 
-    <!-- <key name="swap-window-left" type="as"> -->
-    <!--   <default><![CDATA[['<Super><Shift>j']]]></default> -->
-    <!--   <summary>Swap with window to the left</summary> -->
-    <!--   <description> -->
-    <!--   </description> -->
-    <!-- </key> -->
-    <!-- <key name="swap-window-right" type="as"> -->
-    <!--   <default><![CDATA[['<Super><Shift>l']]]></default> -->
-    <!--   <summary>Swap with window to the right</summary> -->
-    <!--   <description> -->
-    <!--   </description> -->
-    <!-- </key> -->
-    <!-- <key name="swap-window-up" type="as"> -->
-    <!--   <default><![CDATA[['<Super><Shift>i']]]></default> -->
-    <!--   <summary>Swap with window above</summary> -->
-    <!--   <description> -->
-    <!--   </description> -->
-    <!-- </key> -->
-    <!-- <key name="swap-window-down" type="as"> -->
-    <!--   <default><![CDATA[['<Super><Shift>k']]]></default> -->
-    <!--   <summary>Swap with window below</summary> -->
-    <!--   <description> -->
-    <!--   </description> -->
-    <!-- </key> -->
+    <key name="swap-window-left" type="as">
+      <default><![CDATA[['<Super><Shift>j']]]></default>
+      <summary>Swap with window to the left</summary>
+      <description>
+      </description>
+    </key>
+    <key name="swap-window-right" type="as">
+      <default><![CDATA[['<Super><Shift>l']]]></default>
+      <summary>Swap with window to the right</summary>
+      <description>
+      </description>
+    </key>
+    <key name="swap-window-up" type="as">
+      <default><![CDATA[['<Super><Shift>i']]]></default>
+      <summary>Swap with window above</summary>
+      <description>
+      </description>
+    </key>
+    <key name="swap-window-down" type="as">
+      <default><![CDATA[['<Super><Shift>k']]]></default>
+      <summary>Swap with window below</summary>
+      <description>
+      </description>
+    </key>
 
-    <!-- <key name="focus-window-left" type="as"> -->
-    <!--   <default><![CDATA[['<Super>j']]]></default> -->
-    <!--   <summary>Focus window to the left</summary> -->
-    <!--   <description> -->
-    <!--   </description> -->
-    <!-- </key> -->
-    <!-- <key name="focus-window-right" type="as"> -->
-    <!--   <default><![CDATA[['<Super>l']]]></default> -->
-    <!--   <summary>Focus window to the right</summary> -->
-    <!--   <description> -->
-    <!--   </description> -->
-    <!-- </key> -->
-    <!-- <key name="focus-window-up" type="as"> -->
-    <!--   <default><![CDATA[['<Super>i']]]></default> -->
-    <!--   <summary>Focus window above</summary> -->
-    <!--   <description> -->
-    <!--   </description> -->
-    <!-- </key> -->
-    <!-- <key name="focus-window-down" type="as"> -->
-    <!--   <default><![CDATA[['<Super>k']]]></default> -->
-    <!--   <summary>Focus window below</summary> -->
-    <!--   <description> -->
-    <!--   </description> -->
-    <!-- </key> -->
+    <key name="focus-window-left" type="as">
+      <default><![CDATA[['<Super>j']]]></default>
+      <summary>Focus window to the left</summary>
+      <description>
+      </description>
+    </key>
+    <key name="focus-window-right" type="as">
+      <default><![CDATA[['<Super>l']]]></default>
+      <summary>Focus window to the right</summary>
+      <description>
+      </description>
+    </key>
+    <key name="focus-window-up" type="as">
+      <default><![CDATA[['<Super>i']]]></default>
+      <summary>Focus window above</summary>
+      <description>
+      </description>
+    </key>
+    <key name="focus-window-down" type="as">
+      <default><![CDATA[['<Super>k']]]></default>
+      <summary>Focus window below</summary>
+      <description>
+      </description>
+    </key>
 
     <key name="command-menu" type="as">
       <default><![CDATA[['<Super>d']]]></default>
