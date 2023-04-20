@@ -3,8 +3,8 @@
   "description": "my local setup",
   "uuid": "my-setup@geoffjacobsen.gmail.com",
   "shell-version": [
-    "40.0",
-    "41",
+    "44",
+    "43",
     "42"
   ]
 }

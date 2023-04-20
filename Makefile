@@ -66,6 +66,7 @@ ifeq ($(INSTALLTYPE),system)
 	cp -r ./schemas/*gschema.* $(SHARE_PREFIX)/glib-2.0/schemas
 	cp -r ./_build/locale/* $(SHARE_PREFIX)/locale
 endif
+	pkill -HUP gnome-shell
 	-rm -fR _build
 	echo done
 

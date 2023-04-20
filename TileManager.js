@@ -9,7 +9,7 @@
 
   const Me = imports.misc.extensionUtils.getCurrentExtension();
   const {
-    Utils: {getSettings, wsWindows, moveResize, rectIntersect, rectEnclosed, copyRect}
+    Utils: {getSettings, wsWindows, moveResize, moveResizeRect, rectIntersect, rectEnclosed, copyRect}
   } = Me.imports;
 
   // const logr = (st)=>{
@@ -38,17 +38,17 @@
       const a = rects[i];
       for(const b of rects) {
         if (a === b) continue;
-        rectEnclosed(a, b) || rectEnclosed(b, a) || ! rectIntersect(a, b) ||
-          shrinkRect(a, b);
+        rectEnclosed(b, a) || ! rectIntersect(a, b) || shrinkRect(a, b);
       }
     }
 
     for(let i = 0; i < rects.length; ++i) {
       const a = rects[i];
       const max = {l: ss.x, t: ss.y, r: ss.x+ss.width, b: ss.y+ss.height};
+      let found = false;
       for (const b of rects) {
         if (a === b) continue;
-        rectIntersect(a, b, 1) || restrictMax(max, a, b);
+        restrictMax(max, a, b);
       }
       moveResize(iw[i], max.l, max.t, max.r-max.l, max.b-max.t);
     }
@@ -120,6 +120,7 @@
 
     const dw = dl < 0 ? dl : dr,
           dh = dt < 0 ? dt : db;
+    log(JSON.stringify({xi, yi, dl, dt, dr, db, dw, dh}));
 
     if ((dh > 0 || dw > dh) && dw < 0) {
       if (dw == dl) {
@@ -145,11 +146,15 @@
     const orig = fw.get_frame_rect();
     const me = copyRect(orig);
 
+    log(`me `+ JSON.stringify(me));
+
     for(const mw of iw) {
       if (mw === fw) continue;
       const limit = mw.get_frame_rect();
-      rectEnclosed(me, limit) || rectEnclosed(limit, me) || ! rectIntersect(me, limit) ||
-        shrinkRect(me, limit);
+      log(`o `+ JSON.stringify(copyRect(limit)));
+      log(`me in limit ${rectEnclosed(me, limit)}, n ${rectIntersect(me, limit)}`);
+      ! rectEnclosed(me, limit) && rectIntersect(me, limit) && shrinkRect(me, limit);
+      ! rectEnclosed(me, limit) && rectIntersect(me, limit) && log(`shrink ${JSON.stringify(me)}`)
     }
 
     if (me.width < orig.width || me.height < orig.height)
