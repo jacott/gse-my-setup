@@ -100,7 +100,7 @@
     const [x, y] = global.get_pointer();
     const windows = stackingOrderWindows();
     const window = findTopWindowAt(windows, x, y) || global.display.get_focus_window();
-    if (window === undefined) return;
+    if (window == null) return;
 
     const rect = window.get_frame_rect();
 

@@ -120,7 +120,7 @@
 
     const dw = dl < 0 ? dl : dr,
           dh = dt < 0 ? dt : db;
-    log(JSON.stringify({xi, yi, dl, dt, dr, db, dw, dh}));
+    // log(JSON.stringify({xi, yi, dl, dt, dr, db, dw, dh}));
 
     if ((dh > 0 || dw > dh) && dw < 0) {
       if (dw == dl) {
@@ -146,15 +146,15 @@
     const orig = fw.get_frame_rect();
     const me = copyRect(orig);
 
-    log(`me `+ JSON.stringify(me));
+    // log(`me `+ JSON.stringify(me));
 
     for(const mw of iw) {
       if (mw === fw) continue;
       const limit = mw.get_frame_rect();
-      log(`o `+ JSON.stringify(copyRect(limit)));
-      log(`me in limit ${rectEnclosed(me, limit)}, n ${rectIntersect(me, limit)}`);
+      // log(`o `+ JSON.stringify(copyRect(limit)));
+      // log(`me in limit ${rectEnclosed(me, limit)}, n ${rectIntersect(me, limit)}`);
       ! rectEnclosed(me, limit) && rectIntersect(me, limit) && shrinkRect(me, limit);
-      ! rectEnclosed(me, limit) && rectIntersect(me, limit) && log(`shrink ${JSON.stringify(me)}`)
+      // ! rectEnclosed(me, limit) && rectIntersect(me, limit) && log(`shrink ${JSON.stringify(me)}`)
     }
 
     if (me.width < orig.width || me.height < orig.height)

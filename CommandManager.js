@@ -16,7 +16,7 @@
     Utils: {getSettings}
   } = Me.imports;
 
-  const mapLabel = map => (map[name$] || []).join(' ');
+  const mapLabel = map => map[name$]?.join(' ') ?? '';
 
   const CommandDialog = GObject.registerClass({GTypeName: 'CommandDialog'}, class CommandDialog extends ModalDialog {
     _init(map) {
@@ -47,16 +47,16 @@
   };
 
   const seqToMap = (map, seq, command)=>{
-    const [key, rawMod] = Gtk.accelerator_parse(seq);
+    const [_, key, rawMod] = Gtk.accelerator_parse(seq);
     if (rawMod != 0) {
-      map = map[mod$] || (map[mod$] = {});
+      map = map[mod$] ??= [];
       const mod = reduceMod(rawMod);
-      map = map[mod] || (map[mod] = {});
+      map = map[mod] ??= [];
     }
     if (typeof command === 'function')
       map[key] = command;
     else
-      return map[key] || (map[key] = command);
+      return map[key] ??= command;
   };
 
   const lookup = (map, event)=>{
@@ -94,7 +94,7 @@
       for(let i = 0; i < last; ++i)
         map = seqToMap(map, parts[i], {});
 
-      (map[name$] || (map[name$] = [])).push(name);
+      (map[name$] ??= []).push(name);
 
       seqToMap(map, parts[last], command);
     }
@@ -112,6 +112,7 @@
       let capturedEventId;
 
       const onCapturedEvent = (actor, event)=>{
+        try {
         const type = event.type();
         const press = type == Clutter.EventType.KEY_PRESS;
         const release = type == Clutter.EventType.KEY_RELEASE;
@@ -135,7 +136,12 @@
             this._commandDialog._label.text = mapLabel(map);
         }
 
-        return Clutter.EVENT_STOP;
+          return Clutter.EVENT_STOP;
+        } catch(err) {
+          this._commandDialog.disconnect(capturedEventId);
+          this._commandDialog.close();
+          throw err;
+        }
       };
 
       capturedEventId = this._commandDialog.connect('captured-event', onCapturedEvent);
