@@ -66,10 +66,15 @@ ifeq ($(INSTALLTYPE),system)
 	cp -r ./schemas/*gschema.* $(SHARE_PREFIX)/glib-2.0/schemas
 	cp -r ./_build/locale/* $(SHARE_PREFIX)/locale
 endif
-	pkill -HUP gnome-shell
+#	pkill -HUP gnome-shell
 	-rm -fR _build
 	echo done
-
+install-gkj: _build
+	rm -rf $(INSTALLBASE)/$(INSTALLNAME)
+	mkdir -p $(INSTALLBASE)/$(INSTALLNAME)
+	rsync -r ./_build/* gkj:$(INSTALLBASE)/$(INSTALLNAME)/
+	-rm -fR _build
+	echo done
 zip-file: _build
 	cd _build ; \
 	zip -qr "$(UUID)$(VSTRING).zip" .

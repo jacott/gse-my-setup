@@ -2,9 +2,8 @@
   "name": "My Setup",
   "description": "my local setup",
   "uuid": "my-setup@geoffjacobsen.gmail.com",
+  "settings-schema": "org.gnome.shell.extensions.my-setup",
   "shell-version": [
-    "44",
-    "43",
-    "42"
+    "45"
   ]
 }
