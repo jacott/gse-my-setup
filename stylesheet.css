@@ -1,8 +1,7 @@
 
 .ws-text {
-  color: #fff;
-  text-align: center;
-  margin: .25em;
+  color: #cfc;
+  padding: .5em;
 }
 
 .ms-chart {
@@ -12,7 +11,7 @@
 
 .sound-device {
   color: #fff;
-  padding: 0 .2em;
+  padding: .5em;
 }
 
 .command-dialog.headline {

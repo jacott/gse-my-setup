@@ -4,6 +4,6 @@
   "uuid": "my-setup@geoffjacobsen.gmail.com",
   "settings-schema": "org.gnome.shell.extensions.my-setup",
   "shell-version": [
-    "45"
+    "46"
   ]
 }

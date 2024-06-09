@@ -28,7 +28,7 @@ const CommandDialog = GObject.registerClass({GTypeName: 'CommandDialog'}, class 
       style_class: 'command-dialog-label', text: mapLabel(map),
       x_expand: false,
       x_align: St.TextAlign.LEFT, y_align: St.TextAlign.LEFT});
-    this.contentLayout.add(label);
+    this.contentLayout.add_child(label);
 
     this.setInitialKeyFocus(label);
   }

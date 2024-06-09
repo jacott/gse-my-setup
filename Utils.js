@@ -41,7 +41,6 @@ export const getSettings = () => {
   // const extensionObject = Extension.lookupByUUID('my-setup@geoffjacobsen.gmail.com');
   const extensionObject = Extension.lookupByURL(import.meta.url);
 
-  console.log(extensionObject.metadata);
   return extensionObject.getSettings();
 };
 

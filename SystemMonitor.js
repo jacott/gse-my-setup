@@ -61,7 +61,7 @@ export default class SystemMonitor {
   _draw() {
     const [width, height] = this.actor.get_surface_size();
     const cr = this.actor.get_context();
-    Clutter.cairo_set_source_color(cr, Background);
+    cr.setSourceColor(Background);
     cr.rectangle(0, 0, width, height);
     cr.fill();
 
@@ -76,7 +76,7 @@ export default class SystemMonitor {
     }
     cr.lineTo((DATA_LENGTH-1)*wmult, height);
     cr.closePath();
-    Clutter.cairo_set_source_color(cr, Foreground);
+    cr.setSourceColor(Foreground);
     cr.fill();
 
   }
