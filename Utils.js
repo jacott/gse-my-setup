@@ -1,6 +1,7 @@
 import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 import Meta from 'gi://Meta';
 import Clutter from 'gi://Clutter';
+import Cogl from 'gi://Cogl';
 
 export const pointInRect = (x, y, rect) => rect.x < x && rect.y < y &&
   rect.x + rect.width > x && rect.y + rect.height > y;
@@ -53,4 +54,4 @@ export const DisplayWrapper = {
   getMonitorManager: () => Meta.MonitorManager.get(),
 };
 
-export const color_from_string = (color) => Clutter.Color.from_string(color)[1];
+export const color_from_string = (color) => Cogl.Color.from_string(color)[1];

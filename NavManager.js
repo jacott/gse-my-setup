@@ -206,6 +206,7 @@ export default class NavManager {
     for (let i = 1; i < 10; ++i) {
       const workspace = i;
       Main.wm.removeKeybinding(`switch-to-application-${i}`);
+      Main.wm.removeKeybinding(`open-new-window-application-${i}`);
       Main.wm.addKeybinding(
         `app-hotkey-${i}`, this._settings,
         Meta.KeyBindingFlags.IGNORE_AUTOREPEAT,
